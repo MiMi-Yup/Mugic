@@ -31,7 +31,7 @@ import com.uitk15.mugic.ui.viewmodels.viewModelsModule
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 
-class TimberXApp : Application() {
+class MugicApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
