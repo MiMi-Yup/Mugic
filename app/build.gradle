@@ -137,6 +137,10 @@ dependencies {
     implementation "androidx.compose.material:material-icons-core:${versions.compose}"
     implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
     implementation "androidx.compose.runtime:runtime-livedata:${versions.compose}"
+
+    implementation 'androidx.tonyodev.fetch2:xfetch2:3.1.6'
+
+    implementation project(":ytplayer")
 }
 
 apply plugin: 'com.google.gms.google-services'
