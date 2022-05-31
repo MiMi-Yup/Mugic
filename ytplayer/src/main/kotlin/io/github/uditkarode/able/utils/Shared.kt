@@ -1,17 +1,3 @@
-/*
-    Copyright 2020 Udit Karode <udit.karode@gmail.com>
-    This file is part of AbleMusicPlayer.
-    AbleMusicPlayer is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, version 3 of the License.
-    AbleMusicPlayer is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-    You should have received a copy of the GNU General Public License
-    along with AbleMusicPlayer.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
 package io.github.uditkarode.able.utils
 
 import android.annotation.SuppressLint
@@ -48,7 +34,6 @@ import org.jaudiotagger.tag.mp4.Mp4Tag
 import org.json.JSONArray
 import java.io.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 object Shared {
     /** To only show the splash screen on the first launch of
@@ -161,7 +146,7 @@ object Shared {
             }
             audioFile.commit()
             MediaScannerConnection.scanFile(context, arrayOf(imageFile), null, null)
-            
+
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -383,24 +368,24 @@ object Shared {
                     continue
                 }
                 val mediaInfo = FFprobe.getMediaInformation(f.absolutePath)
-                if (mediaInfo != null) {
-                    val metadata=mediaInfo.tags
-                    if(metadata.optString("title").isNotEmpty())
-                        name=metadata.optString("title")
-                    if(metadata.optString("ARTIST").isEmpty())
-                        artist=metadata.optString("artist")
-                    else if(metadata.optString("artist").isEmpty())
-                        artist=metadata.optString("ARTIST")
-                    if (name != "???") {
-                        songs.add(
-                            Song(
-                                name,
-                                artist,
-                                filePath = f.path
-                            )
-                        )
-                    }
-                }
+//                if (mediaInfo != null) {
+//                    val metadata = mediaInfo.tags
+//                    if(metadata.optString("title").isNotEmpty())
+//                        name=metadata.optString("title")
+//                    if(metadata.optString("ARTIST").isEmpty())
+//                        artist=metadata.optString("artist")
+//                    else if(metadata.optString("artist").isEmpty())
+//                        artist=metadata.optString("ARTIST")
+//                    if (name != "???") {
+//                        songs.add(
+//                            Song(
+//                                name,
+//                                artist,
+//                                filePath = f.path
+//                            )
+//                        )
+//                    }
+//                }
             }
         }
 

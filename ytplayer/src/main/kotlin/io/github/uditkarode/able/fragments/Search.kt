@@ -1,24 +1,9 @@
-/*
-    Copyright 2020 Udit Karode <udit.karode@gmail.com>
-    This file is part of AbleMusicPlayer.
-    AbleMusicPlayer is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, version 3 of the License.
-    AbleMusicPlayer is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-    You should have received a copy of the GNU General Public License
-    along with AbleMusicPlayer.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
 package io.github.uditkarode.able.fragments
 
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,7 +44,7 @@ class Search : Fragment(), CoroutineScope {
     interface SongCallback {
         fun sendItem(song: Song , mode:String = "")
     }
-    
+
     override val coroutineContext = Dispatchers.Main + SupervisorJob()
     private var _binding: SearchBinding? = null
 

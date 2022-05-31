@@ -22,7 +22,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
 
-        <activity android:name=".activities.MainActivity" android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".activities.MainActivity" android:windowSoftInputMode="adjustNothing">
+
+        </activity>
 
         <activity android:name=".activities.Player" android:theme="@style/PlayerTheme" android:noHistory="true"/>
 

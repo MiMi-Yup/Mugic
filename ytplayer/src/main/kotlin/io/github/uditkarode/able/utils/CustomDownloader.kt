@@ -15,7 +15,6 @@
 
 package io.github.uditkarode.able.utils
 
-import com.tonyodev.fetch2core.Downloader
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
