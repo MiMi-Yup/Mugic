@@ -368,24 +368,24 @@ object Shared {
                     continue
                 }
                 val mediaInfo = FFprobe.getMediaInformation(f.absolutePath)
-//                if (mediaInfo != null) {
-//                    val metadata = mediaInfo.tags
-//                    if(metadata.optString("title").isNotEmpty())
-//                        name=metadata.optString("title")
-//                    if(metadata.optString("ARTIST").isEmpty())
-//                        artist=metadata.optString("artist")
-//                    else if(metadata.optString("artist").isEmpty())
-//                        artist=metadata.optString("ARTIST")
-//                    if (name != "???") {
-//                        songs.add(
-//                            Song(
-//                                name,
-//                                artist,
-//                                filePath = f.path
-//                            )
-//                        )
-//                    }
-//                }
+                if (mediaInfo != null) {
+                    val metadata=mediaInfo.tags
+                    if(metadata.optString("title").isNotEmpty())
+                        name=metadata.optString("title")
+                    if(metadata.optString("ARTIST").isEmpty())
+                        artist=metadata.optString("artist")
+                    else if(metadata.optString("artist").isEmpty())
+                        artist=metadata.optString("ARTIST")
+                    if (name != "???") {
+                        songs.add(
+                            Song(
+                                name,
+                                artist,
+                                filePath = f.path
+                            )
+                        )
+                    }
+                }
             }
         }
 
