@@ -26,10 +26,7 @@ import androidx.annotation.NonNull
 import androidx.mediarouter.app.MediaRouteButton
 import com.afollestad.rxkprefs.Pref
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.uitk15.mugic.PREF_APP_THEME
 import com.uitk15.mugic.R
 import com.uitk15.mugic.constants.AppThemes
@@ -44,11 +41,15 @@ import com.uitk15.mugic.ui.fragments.MainFragment
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
 import com.uitk15.mugic.ui.viewmodels.MainViewModel
 import com.uitk15.mugic.ui.widgets.BottomSheetListener
+import io.github.uditkarode.able.fragments.Search
+import io.github.uditkarode.able.models.Song
 import io.reactivex.functions.Consumer
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
+@OptIn(ExperimentalCoroutinesApi::class)
+class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Search.SongCallback {
 
     private val viewModel by viewModel<MainViewModel>()
     private val songsRepository by inject<SongsRepository>()
@@ -203,5 +204,9 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
 
     private fun getBrowseFragment(mediaId: MediaID): MediaItemFragment? {
         return supportFragmentManager.findFragmentByTag(mediaId.type) as MediaItemFragment?
+    }
+
+    override fun sendItem(song: Song, mode: String) {
+        TODO("Not yet implemented")
     }
 }

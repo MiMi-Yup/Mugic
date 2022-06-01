@@ -23,19 +23,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uitk15.mugic.R
-import com.uitk15.mugic.extensions.addOnItemClick
-import com.uitk15.mugic.extensions.getExtraBundle
-import com.uitk15.mugic.extensions.inflateWithBinding
 import com.uitk15.mugic.databinding.FragmentSearchBinding
-import com.uitk15.mugic.extensions.observe
-import com.uitk15.mugic.extensions.safeActivity
-import com.uitk15.mugic.extensions.toSongIds
+import com.uitk15.mugic.extensions.*
 import com.uitk15.mugic.ui.adapters.AlbumAdapter
 import com.uitk15.mugic.ui.adapters.ArtistAdapter
 import com.uitk15.mugic.ui.adapters.SongsAdapter
 import com.uitk15.mugic.ui.fragments.base.BaseNowPlayingFragment
 import com.uitk15.mugic.ui.viewmodels.SearchViewModel
 import com.uitk15.mugic.util.AutoClearedValue
+import io.github.uditkarode.able.fragments.Search
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SearchFragment : BaseNowPlayingFragment() {
@@ -57,6 +54,7 @@ class SearchFragment : BaseNowPlayingFragment() {
         return binding.root
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -114,6 +112,10 @@ class SearchFragment : BaseNowPlayingFragment() {
         binding.let {
             it.viewModel = searchViewModel
             it.setLifecycleOwner(this)
+        }
+
+        binding.floatingActionButton.setOnClickListener {
+            safeActivity.addFragment(fragment = Search())
         }
     }
 }
