@@ -150,7 +150,6 @@ dependencies {
 
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
-    implementation(name:'mobile-ffmpeg', ext:'aar')
 }
 
 apply plugin: 'com.google.gms.google-services'
