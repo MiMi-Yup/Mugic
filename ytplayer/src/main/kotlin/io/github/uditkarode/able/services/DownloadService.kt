@@ -100,7 +100,7 @@ class DownloadService : JobIntentService(), CoroutineScope {
     }
 
     private fun download(song: DownloadableSong) {
-        launch(Dispatchers.IO) {
+        /*launch(Dispatchers.IO) {
             if (song.ytmThumbnailLink.isNotBlank()) {
                 val drw = Glide
                     .with(this@DownloadService)
@@ -118,7 +118,7 @@ class DownloadService : JobIntentService(), CoroutineScope {
                 val img = File(Constants.ableSongDir.absolutePath + "/album_art", id)
                 Shared.saveAlbumArtToDisk(drw.toBitmap(), img)
             }
-        }
+        }*/
 
         launch(Dispatchers.IO) {
             val bundle = Bundle()
@@ -212,6 +212,7 @@ class DownloadService : JobIntentService(), CoroutineScope {
                         command += "\"${Constants.ableSongDir.absolutePath}/$id."
                         command += if (format == Format.MODE_MP3) "mp3\"" else "$ext\""
                         Log.e("asd", "DOING")
+                        //error la ne: dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/base.apk"],nativeLibraryDirectories=[/data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/lib/x86, /data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/base.apk!/lib/x86, /system/lib]]] couldn't find "libmobileffmpeg_abidetect.so"
                         when (val rc = FFmpeg.execute(command)) {
                             Config.RETURN_CODE_SUCCESS -> {
                                 File(target).delete()

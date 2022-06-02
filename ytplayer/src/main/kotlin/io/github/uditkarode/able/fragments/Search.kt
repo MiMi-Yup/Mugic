@@ -158,7 +158,7 @@ class Search : Fragment(), CoroutineScope {
                         var query = text.toString()
                         if (query.isEmpty())
                             query = "songs"
-                        val useYtMusic: Boolean = when {
+                        /*val useYtMusic: Boolean = when {
                             text.startsWith("!") -> {
                                 query = text.toString().replaceFirst(Regex("^!\\s*"), "")
                                 true
@@ -171,7 +171,9 @@ class Search : Fragment(), CoroutineScope {
 
                             else -> (PreferenceManager.getDefaultSharedPreferences(requireContext())
                                 .getString("source_key", "Youtube Music") == "Youtube Music")
-                        }
+                        }*/
+
+                        val useYtMusic = false
 
                         launch(Dispatchers.IO) {
                             if (useYtMusic) {
