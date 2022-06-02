@@ -199,17 +199,20 @@ class DownloadService : JobIntentService(), CoroutineScope {
                                 "\"${target}\" -y -c copy " +
                                 "-metadata title=\"${name}\" " +
                                 "-metadata artist=\"${song.artist}\" "
-                        val format =
+                        /*val format =
                             if (PreferenceManager.getDefaultSharedPreferences(
                                     this@DownloadService
                                 )
                                     .getString("format_key", "webm") == "mp3"
                             ) Format.MODE_MP3
-                            else Format.MODE_WEBM
+                            else Format.MODE_WEBM*/
+
+                        val format = Format.MODE_MP3
+
                         if (format == Format.MODE_MP3 || Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
                             command += "-vn -ab ${bitrate}k -c:a mp3 -ar 44100 "
 
-                        command += "\"${Constants.ableSongDir.absolutePath}/$id."
+                        command += "\"${Constants.ableSongDir.absolutePath}/../Music/$id."
                         command += if (format == Format.MODE_MP3) "mp3\"" else "$ext\""
                         Log.e("asd", "DOING")
                         //error la ne: dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/base.apk"],nativeLibraryDirectories=[/data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/lib/x86, /data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/base.apk!/lib/x86, /system/lib]]] couldn't find "libmobileffmpeg_abidetect.so"

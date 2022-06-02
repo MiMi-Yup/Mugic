@@ -118,8 +118,9 @@ class SearchFragment : BaseNowPlayingFragment(), Search.SongCallback {
         }
 
         binding.floatingActionButton.setOnClickListener {
-            val intent = Intent(context, MainActivity::class.java)
-            startActivity(intent)
+//            val intent = Intent(context, MainActivity::class.java)
+//            startActivity(intent)
+            safeActivity.addFragment(fragment = Search())
         }
     }
 
