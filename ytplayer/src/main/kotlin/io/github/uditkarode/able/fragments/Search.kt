@@ -12,7 +12,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +27,7 @@ import kotlinx.coroutines.*
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList.YouTube
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem
+import org.schabi.newpipe.extractor.search.SearchExtractor
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import java.lang.ref.WeakReference
@@ -179,7 +179,8 @@ class Search : Fragment(), CoroutineScope {
                             if (useYtMusic) {
                                 when (sp.getString("mode", "Music")) {
                                     "Music" -> {
-                                        val extractor = YouTube.getSearchExtractor(
+                                        val extractor:
+                                                SearchExtractor =  YouTube.getSearchExtractor(
                                             query, singletonList(
                                                 YoutubeSearchQueryHandlerFactory.MUSIC_SONGS
                                             ), ""
@@ -211,9 +212,9 @@ class Search : Fragment(), CoroutineScope {
                                             ), ""
                                         )
 
-                                        extractor.fetchPage()
+                                        extractor?.fetchPage()
 
-                                        for (song in extractor.initialPage.items) {
+                                        for (song in extractor?.initialPage?.items!!) {
                                             val ex = song as PlaylistInfoItem
                                             if(song.thumbnailUrl.contains("ytimg")) {
                                                 val songId = Shared.getIdFromLink(ex.url)

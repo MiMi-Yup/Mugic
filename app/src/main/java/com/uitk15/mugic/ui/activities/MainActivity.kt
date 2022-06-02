@@ -23,10 +23,8 @@ import android.provider.MediaStore.EXTRA_MEDIA_TITLE
 import android.provider.MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.mediarouter.app.MediaRouteButton
-import androidx.preference.PreferenceManager
 import com.afollestad.rxkprefs.Pref
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
@@ -44,10 +42,9 @@ import com.uitk15.mugic.ui.fragments.MainFragment
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
 import com.uitk15.mugic.ui.viewmodels.MainViewModel
 import com.uitk15.mugic.ui.widgets.BottomSheetListener
+import io.github.uditkarode.able.fragments.Home
 import io.github.uditkarode.able.fragments.Search
-import io.github.uditkarode.able.models.MusicMode
 import io.github.uditkarode.able.models.Song
-import io.github.uditkarode.able.services.DownloadService
 import io.github.uditkarode.able.services.ServiceResultReceiver
 import io.reactivex.functions.Consumer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -65,6 +62,7 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
     private var bottomSheetListener: BottomSheetListener? = null
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
     private lateinit var mServiceResultReceiver: ServiceResultReceiver
+    private lateinit var home: Home
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(appThemePref.get().themeRes)
@@ -83,6 +81,8 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
 
         mServiceResultReceiver = ServiceResultReceiver(Handler(Looper.getMainLooper()))
         mServiceResultReceiver.setReceiver(this@MainActivity)
+
+        home = Home()
     }
 
     fun setBottomSheetListener(bottomSheetListener: BottomSheetListener) {
@@ -222,51 +222,53 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
         if (mode.isNotEmpty())
             currentMode = mode*/
 
-        var currentMode = MusicMode.download
+//        var currentMode = MusicMode.stream
+//
+//        if(song.ytmThumbnail.contains("googleusercontent")) //set resolution for youtube music art
+//        {
+//            song.ytmThumbnail = song.ytmThumbnail.replace("w120","w1500")
+//            song.ytmThumbnail = song.ytmThumbnail.replace("h120","h1500")
+//        }
+//
+//        when (currentMode) {
+//            MusicMode.download -> {
+//                val songL = ArrayList<String>()
+//                songL.add(song.name)
+//                songL.add(song.youtubeLink)
+//                songL.add(song.artist)
+//                songL.add(song.ytmThumbnail)
+//                val serviceIntentService = Intent(this@MainActivity, DownloadService::class.java)
+//                    .putStringArrayListExtra("song", songL)
+//                    .putExtra("receiver", mServiceResultReceiver)
+//                DownloadService.enqueueDownload(this, serviceIntentService)
+//                Toast.makeText(
+//                    this@MainActivity,
+//                    "${song.name} ${getString(io.github.uditkarode.able.R.string.dl_added)}",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//                /*
+//                    * takes user back to the home screen when download starts *
+//                    mainContent.currentItem = -1
+//                    bottomNavigation.menu.findItem(R.id.home_menu)?.isChecked = true
+//                 */
+//            }
+//
+//            MusicMode.stream -> {
+//                home.streamAudio(song, false)
+//                runOnUiThread {
+//                    loadingEvent(true)
+//                }
+//            }
+//
+//            MusicMode.both -> {
+//                home.streamAudio(song, true)
+//                runOnUiThread {
+//                    loadingEvent(true)
+//                }
+//            }
+//        }
 
-        if(song.ytmThumbnail.contains("googleusercontent")) //set resolution for youtube music art
-        {
-            song.ytmThumbnail = song.ytmThumbnail.replace("w120","w1500")
-            song.ytmThumbnail = song.ytmThumbnail.replace("h120","h1500")
-        }
 
-        when (currentMode) {
-            MusicMode.download -> {
-                val songL = ArrayList<String>()
-                songL.add(song.name)
-                songL.add(song.youtubeLink)
-                songL.add(song.artist)
-                songL.add(song.ytmThumbnail)
-                val serviceIntentService = Intent(this@MainActivity, DownloadService::class.java)
-                    .putStringArrayListExtra("song", songL)
-                    .putExtra("receiver", mServiceResultReceiver)
-                DownloadService.enqueueDownload(this, serviceIntentService)
-                Toast.makeText(
-                    this@MainActivity,
-                    "${song.name} ${getString(io.github.uditkarode.able.R.string.dl_added)}",
-                    Toast.LENGTH_SHORT
-                ).show()
-                /*
-                    * takes user back to the home screen when download starts *
-                    mainContent.currentItem = -1
-                    bottomNavigation.menu.findItem(R.id.home_menu)?.isChecked = true
-                 */
-            }
-
-            /*MusicMode.stream -> {
-                home.streamAudio(song, false)
-                runOnUiThread {
-                    loadingEvent(true)
-                }
-            }
-
-            MusicMode.both -> {
-                home.streamAudio(song, true)
-                runOnUiThread {
-                    loadingEvent(true)
-                }
-            }*/
-        }
     }
 
     override fun onReceiveResult(resultCode: Int) {

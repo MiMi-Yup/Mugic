@@ -14,6 +14,7 @@
  */
 package com.uitk15.mugic.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -31,11 +32,13 @@ import com.uitk15.mugic.ui.adapters.SongsAdapter
 import com.uitk15.mugic.ui.fragments.base.BaseNowPlayingFragment
 import com.uitk15.mugic.ui.viewmodels.SearchViewModel
 import com.uitk15.mugic.util.AutoClearedValue
+import io.github.uditkarode.able.activities.MainActivity
 import io.github.uditkarode.able.fragments.Search
+import io.github.uditkarode.able.models.Song
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class SearchFragment : BaseNowPlayingFragment() {
+class SearchFragment : BaseNowPlayingFragment(), Search.SongCallback {
 
     private val searchViewModel by sharedViewModel<SearchViewModel>()
 
@@ -115,7 +118,12 @@ class SearchFragment : BaseNowPlayingFragment() {
         }
 
         binding.floatingActionButton.setOnClickListener {
-            safeActivity.addFragment(fragment = Search())
+            val intent = Intent(context, MainActivity::class.java)
+            startActivity(intent)
         }
+    }
+
+    override fun sendItem(song: Song, mode: String) {
+        TODO("Not yet implemented")
     }
 }

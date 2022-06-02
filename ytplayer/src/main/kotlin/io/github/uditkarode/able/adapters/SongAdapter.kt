@@ -18,6 +18,7 @@
 
 package io.github.uditkarode.able.adapters
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -84,7 +85,7 @@ class SongAdapter (
     private var onShuffle = false
     private lateinit var playingSong: Song
 
-    override fun onBindViewHolder(holder: RVVH, position: Int) {
+    override fun onBindViewHolder(holder: RVVH, @SuppressLint("RecyclerView") position: Int) {
         val current = songList[position]
         holder.songName.text = current.name
         holder.artistName.text = current.artist

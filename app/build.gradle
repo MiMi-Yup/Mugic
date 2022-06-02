@@ -150,6 +150,9 @@ dependencies {
 
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
+
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'com.github.TeamNewPipe.NewPipeExtractor:NewPipeExtractor:0.22.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

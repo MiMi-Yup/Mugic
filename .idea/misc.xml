@@ -4,23 +4,42 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/drawable/bg_playlist_fab.xml" value="0.23" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/drawable/bg_search_box.xml" value="0.1625" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/drawable/bg_up_next.xml" value="0.23" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/drawable/ic_arrow_back.xml" value="0.2" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/drawable/ic_file_music_dark.xml" value="0.1485" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/drawable/ic_music_note.xml" value="0.1625" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/drawable/progress_drawable.xml" value="0.1485" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/activity_settings.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/fragment_album_detail.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/fragment_artist_detail.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/fragment_category_songs.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/fragment_lyrics.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/fragment_now_playing.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/fragment_playlists.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/fragment_queue.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/fragment_search.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/item_album.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/item_songs.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/item_songs_header.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/layout_bottomsheet_controls.xml" value="0.264" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/layout_recyclerview.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/layout_recyclerview_padding.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/main_activity.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/main_fragment.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/toolbar.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/xml/preferences.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/cast.xml" value="0.1625" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/circle.xml" value="0.1625" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/ic_heart.xml" value="0.1625" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1625" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/nobg_pause.xml" value="0.1" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/playlist_black.xml" value="0.1625" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/search.xml" value="0.1625" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/activity_main.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/rv_item.xml" value="0.1" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/rv_result.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/rv_ytm_result.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/search.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Thiet/AndroidStudioProjects/test3/app/src/main/res/layout/fragment_search.xml" value="0.22418478260869565" />
         <entry key="..\:/Users/Thiet/AndroidStudioProjects/test3/ytplayer/src/main/res/layout/albumplaylist.xml" value="0.1921875" />

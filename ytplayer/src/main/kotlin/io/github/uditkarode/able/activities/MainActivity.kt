@@ -31,13 +31,11 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.os.*
 import android.text.Html
-import android.util.Log
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
-import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.flurry.android.FlurryAgent
@@ -69,7 +67,6 @@ import okhttp3.OkHttpClient
 import org.schabi.newpipe.extractor.NewPipe
 import java.io.ByteArrayOutputStream
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * First activity that shows up when the user opens the application
@@ -311,11 +308,12 @@ class MainActivity : MusicClientActivity(), Search.SongCallback, ServiceResultRe
     }
 
     override fun sendItem(song: Song, mode: String) {
-        var currentMode = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
-            .getString("mode_key", MusicMode.download)
-        if (mode.isNotEmpty())
-            currentMode = mode
+//        var currentMode = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
+//            .getString("mode_key", MusicMode.download)
+//        if (mode.isNotEmpty())
+//            currentMode = mode
 
+        var currentMode = MusicMode.stream
         if(song.ytmThumbnail.contains("googleusercontent")) //set resolution for youtube music art
         {
             song.ytmThumbnail = song.ytmThumbnail.replace("w120","w1500")
