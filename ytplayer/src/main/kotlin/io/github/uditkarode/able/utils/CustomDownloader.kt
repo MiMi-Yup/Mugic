@@ -15,6 +15,7 @@
 
 package io.github.uditkarode.able.utils
 
+import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -51,6 +52,7 @@ class CustomDownloader private constructor(builder: OkHttpClient.Builder) : Down
                 requestBuilder.header(headerName, headerValueList[0])
             }
         }
+
         val response = client.newCall(requestBuilder.build()).execute()
         if (response.code == 429) {
             response.close()

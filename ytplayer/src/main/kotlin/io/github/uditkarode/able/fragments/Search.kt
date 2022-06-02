@@ -21,9 +21,11 @@ import io.github.uditkarode.able.adapters.YtResultAdapter
 import io.github.uditkarode.able.adapters.YtmResultAdapter
 import io.github.uditkarode.able.databinding.SearchBinding
 import io.github.uditkarode.able.models.Song
+import io.github.uditkarode.able.utils.CustomDownloader
 import io.github.uditkarode.able.utils.Shared
 import io.github.uditkarode.able.utils.SwipeController
 import kotlinx.coroutines.*
+import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList.YouTube
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory
@@ -61,6 +63,7 @@ class Search : Fragment(), CoroutineScope {
         savedInstanceState: Bundle?
     ): View {
         _binding = SearchBinding.inflate(inflater, container, false)
+        NewPipe.init(CustomDownloader.getInstance())
         return binding.root
     }
 
@@ -250,7 +253,8 @@ class Search : Fragment(), CoroutineScope {
                                         }
                                     }
                                 }
-                            } else {
+                            }
+                            else {
                                 val extractor = YouTube.getSearchExtractor(
                                     query, singletonList(
                                         YoutubeSearchQueryHandlerFactory.VIDEOS
