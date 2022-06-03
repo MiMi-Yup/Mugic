@@ -158,7 +158,8 @@ class MainActivity : MusicClientActivity(), Search.SongCallback, ServiceResultRe
         }
 
         home = Home()
-        mainContent.adapter = ViewPagerAdapter(supportFragmentManager, home)
+        val search = Search()
+        mainContent.adapter = ViewPagerAdapter(supportFragmentManager, search)
         mainContent.setPageTransformer(false) { page, _ ->
             page.alpha = 0f
             page.visibility = View.VISIBLE
@@ -167,15 +168,15 @@ class MainActivity : MusicClientActivity(), Search.SongCallback, ServiceResultRe
                 .alpha(1f).duration = 200
         }
 
-        bottomNavigation = binding.bottomNavigation
-        bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.home_menu -> binding.mainContent.currentItem = 0
-                R.id.search_menu -> binding.mainContent.currentItem = 1
-                R.id.settings_menu -> binding.mainContent.currentItem = 2
-            }
-            true
-        }
+//        bottomNavigation = binding.bottomNavigation
+//        bottomNavigation.setOnNavigationItemSelectedListener { item ->
+//            when (item.itemId) {
+//                R.id.home_menu -> binding.mainContent.currentItem = 0
+//                R.id.search_menu -> binding.mainContent.currentItem = 1
+//                R.id.settings_menu -> binding.mainContent.currentItem = 2
+//            }
+//            true
+//        }
 
         binding.activitySeekbar.thumb.alpha = 0
 

@@ -68,23 +68,23 @@
 
                 <TextView
                     android:id="@+id/bb_song"
-                    android:requiresFadingEdge="horizontal"
+                    fontPath="fonts/interbold.otf"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="15sp"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:fadingEdge="horizontal"
-                    android:text="@string/welc"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="10.5dp"
+                    android:layout_toStartOf="@id/bb_icon"
+                    android:layout_toEndOf="@id/bb_expand"
+                    android:ellipsize="marquee"
+                    android:fadingEdge="horizontal"
+                    android:gravity="center"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:maxWidth="100dp"
+                    android:requiresFadingEdge="horizontal"
+                    android:singleLine="true"
+                    android:text="@string/welc"
                     android:textColor="#fbfbfb"
-                    android:layout_toEndOf="@id/bb_expand"
-                    android:layout_toStartOf="@id/bb_icon"
-                    android:gravity="center"
-                    fontPath="fonts/interbold.otf"
+                    android:textSize="15sp"
                     tools:ignore="MissingPrefix" />
 
                 <ImageView
@@ -108,20 +108,7 @@
             android:background="#000000"
             />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:animateLayoutChanges="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:labelVisibilityMode="labeled"
-            android:layout_gravity="bottom"
-            android:padding="3dp"
-            android:background="@color/colorPrimaryDark"
-            app:itemIconTint="@color/bnselector"
-            app:itemTextColor="@color/bnselector"
-            app:elevation="0dp"
-            app:itemRippleColor="#5e92f3"
-            app:menu="@menu/bottom_nav" />
+
 
     </LinearLayout>
 

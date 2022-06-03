@@ -153,6 +153,7 @@ dependencies {
 
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'com.github.TeamNewPipe.NewPipeExtractor:NewPipeExtractor:0.22.1'
+    implementation 'com.flurry.android:analytics:13.0.0@aar'
 }
 
 apply plugin: 'com.google.gms.google-services'

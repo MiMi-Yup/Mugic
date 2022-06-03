@@ -25,7 +25,7 @@
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/layout_bottomsheet_controls.xml" value="0.264" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/layout_recyclerview.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/layout_recyclerview_padding.xml" value="0.21927083333333333" />
-        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/main_activity.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/main_activity.xml" value="0.25" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/main_fragment.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/toolbar.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/xml/preferences.xml" value="0.21927083333333333" />
@@ -36,7 +36,7 @@
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/nobg_pause.xml" value="0.1" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/playlist_black.xml" value="0.1625" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/drawable/search.xml" value="0.1625" />
-        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/activity_main.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/rv_item.xml" value="0.1" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/rv_result.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/rv_ytm_result.xml" value="0.21927083333333333" />
