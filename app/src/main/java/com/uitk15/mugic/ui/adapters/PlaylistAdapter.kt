@@ -18,8 +18,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.uitk15.mugic.R
 import com.uitk15.mugic.databinding.ItemPlaylistBinding
-import com.uitk15.mugic.models.Playlist
 import com.uitk15.mugic.extensions.inflateWithBinding
+import com.uitk15.mugic.models.Playlist
 
 class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
     var playlists: List<Playlist> = emptyList()
