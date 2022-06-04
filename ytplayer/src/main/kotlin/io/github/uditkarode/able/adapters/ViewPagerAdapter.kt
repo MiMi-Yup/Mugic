@@ -34,8 +34,8 @@ class ViewPagerAdapter(fm: FragmentManager, private val home: Home):
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getItem(position: Int): Fragment {
         return when(position) {
-            0 -> home
-            1 -> Search()
+            0 -> Search()
+            1 -> home
             else -> Playlists()
         }
     }

@@ -166,15 +166,15 @@ class MainActivity : MusicClientActivity(), Search.SongCallback, ServiceResultRe
                 .alpha(1f).duration = 200
         }
 
-        bottomNavigation = binding.bottomNavigation
-        bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.home_menu -> binding.mainContent.currentItem = 0
-                R.id.search_menu -> binding.mainContent.currentItem = 1
-                R.id.settings_menu -> binding.mainContent.currentItem = 2
-            }
-            true
-        }
+//        bottomNavigation = binding.bottomNavigation
+//        bottomNavigation.setOnNavigationItemSelectedListener { item ->
+//            when (item.itemId) {
+//                R.id.home_menu -> binding.mainContent.currentItem = 0
+//                R.id.search_menu -> binding.mainContent.currentItem = 1
+//                R.id.settings_menu -> binding.mainContent.currentItem = 2
+//            }
+//            true
+//        }
 
         binding.activitySeekbar.thumb.alpha = 0
 
