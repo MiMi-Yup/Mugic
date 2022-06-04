@@ -1,17 +1,13 @@
 /*
     Copyright 2020 Udit Karode <udit.karode@gmail.com>
-
     This file is part of AbleMusicPlayer.
-
     AbleMusicPlayer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, version 3 of the License.
-
     AbleMusicPlayer is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
     You should have received a copy of the GNU General Public License
     along with AbleMusicPlayer.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -80,6 +76,7 @@ class MainActivity : MusicClientActivity(), Search.SongCallback, ServiceResultRe
     private lateinit var mainContent: ViewPager
     private lateinit var timer: Timer
     private lateinit var home: Home
+    private lateinit var search: Search
 
     private var mService: MusicService? = null
     private var scheduled = false
@@ -88,6 +85,7 @@ class MainActivity : MusicClientActivity(), Search.SongCallback, ServiceResultRe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NewPipe.init(CustomDownloader.getInstance())
+//        System.loadLibrary("song-actions")
 
         launch(Dispatchers.Default) {
             if (checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -158,8 +156,8 @@ class MainActivity : MusicClientActivity(), Search.SongCallback, ServiceResultRe
         }
 
         home = Home()
-        val search = Search()
-        mainContent.adapter = ViewPagerAdapter(supportFragmentManager, search)
+
+        mainContent.adapter = ViewPagerAdapter(supportFragmentManager, home)
         mainContent.setPageTransformer(false) { page, _ ->
             page.alpha = 0f
             page.visibility = View.VISIBLE
@@ -168,15 +166,15 @@ class MainActivity : MusicClientActivity(), Search.SongCallback, ServiceResultRe
                 .alpha(1f).duration = 200
         }
 
-//        bottomNavigation = binding.bottomNavigation
-//        bottomNavigation.setOnNavigationItemSelectedListener { item ->
-//            when (item.itemId) {
-//                R.id.home_menu -> binding.mainContent.currentItem = 0
-//                R.id.search_menu -> binding.mainContent.currentItem = 1
-//                R.id.settings_menu -> binding.mainContent.currentItem = 2
-//            }
-//            true
-//        }
+        bottomNavigation = binding.bottomNavigation
+        bottomNavigation.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home_menu -> binding.mainContent.currentItem = 0
+                R.id.search_menu -> binding.mainContent.currentItem = 1
+                R.id.settings_menu -> binding.mainContent.currentItem = 2
+            }
+            true
+        }
 
         binding.activitySeekbar.thumb.alpha = 0
 
@@ -314,12 +312,13 @@ class MainActivity : MusicClientActivity(), Search.SongCallback, ServiceResultRe
 //        if (mode.isNotEmpty())
 //            currentMode = mode
 
-        var currentMode = MusicMode.stream
         if(song.ytmThumbnail.contains("googleusercontent")) //set resolution for youtube music art
         {
             song.ytmThumbnail = song.ytmThumbnail.replace("w120","w1500")
             song.ytmThumbnail = song.ytmThumbnail.replace("h120","h1500")
         }
+
+        val currentMode = MusicMode.stream
         when (currentMode) {
             MusicMode.download -> {
                 val songL = ArrayList<String>()
