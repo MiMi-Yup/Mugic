@@ -13,4 +13,5 @@
     <dimen name="corner_extra_large">10dp</dimen>
 
     <dimen name="bottom_controls_height">65dp</dimen>
+    <dimen name="fab_margin_bottom">55dp</dimen>
 </resources>

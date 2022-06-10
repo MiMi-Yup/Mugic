@@ -158,20 +158,20 @@ class Search : Fragment(), CoroutineScope {
                         var query = text.toString()
                         if (query.isEmpty())
                             query = "songs"
-                        /*val useYtMusic: Boolean = when {
-                            text.startsWith("!") -> {
-                                query = text.toString().replaceFirst(Regex("^!\\s*"), "")
-                                true
-                            }
-
-                            text.startsWith("?") -> {
-                                query = text.toString().replaceFirst(Regex("^?\\s*"), "")
-                                false
-                            }
-
-                            else -> (PreferenceManager.getDefaultSharedPreferences(requireContext())
-                                .getString("source_key", "Youtube Music") == "Youtube Music")
-                        }*/
+//                        val useYtMusic: Boolean = when {
+//                            text.startsWith("!") -> {
+//                                query = text.toString().replaceFirst(Regex("^!\\s*"), "")
+//                                true
+//                            }
+//
+//                            text.startsWith("?") -> {
+//                                query = text.toString().replaceFirst(Regex("^?\\s*"), "")
+//                                false
+//                            }
+//
+//                            else -> (PreferenceManager.getDefaultSharedPreferences(requireContext())
+//                                .getString("source_key", "Youtube Music") == "Youtube Music")
+//                        }
 
                         val useYtMusic = false
 

@@ -47,6 +47,7 @@ import io.github.uditkarode.able.models.SongState
 import io.github.uditkarode.able.services.MusicService
 import io.github.uditkarode.able.services.SpotifyImportService
 import io.github.uditkarode.able.utils.Shared
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback, MusicService.MusicClient {
     var binding by AutoClearedValue<FragmentPlaylistsBinding>(this)
@@ -62,7 +63,8 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
         return binding.root
     }
 
-    @SuppressLint("RestrictedApi")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @SuppressLint("RestrictedApi", "CheckResult")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -161,7 +163,7 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
             isImporting = false
             WorkManager.getInstance(requireContext()).cancelUniqueWork("SpotifyImport")
             (binding.recyclerView.adapter as PlaylistAdapter).also { playlistAdapter ->
-                playlistAdapter.updateData(Shared.getPlaylists() as ArrayList<Playlist>)
+                playlistAdapter.updateData(Shared.getPlaylists().toList() as List<Playlist>)
                 binding.floatingActionButton.setImageResource(io.github.uditkarode.able.R.drawable.ic_spot)
             }
         }

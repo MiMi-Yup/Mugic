@@ -66,11 +66,11 @@
         android:id="@+id/loading_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:lottie_renderMode="hardware"
         android:layout_centerInParent="true"
+        app:lottie_autoPlay="false"
         app:lottie_fileName="musicfly.json"
-        app:lottie_progress="0.3080229"
         app:lottie_loop="true"
-        app:lottie_autoPlay="false" />
+        app:lottie_progress="0.3080229"
+        app:lottie_renderMode="hardware" />
 
 </RelativeLayout>

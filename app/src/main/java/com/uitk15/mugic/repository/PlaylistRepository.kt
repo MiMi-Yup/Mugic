@@ -33,6 +33,7 @@ import android.provider.MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI as PLAYL
 import android.provider.MediaStore.Audio.Playlists.Members.AUDIO_ID as PLAYLIST_AUDIO_ID
 import android.provider.MediaStore.Audio.Playlists.Members.PLAY_ORDER as PLAYLIST_PLAY_ORDER
 import android.provider.MediaStore.Audio.PlaylistsColumns.NAME as PLAYLIST_COLUMN_NAME
+import timber.log.Timber.d as log
 
 private const val YIELD_FREQUENCY = 100
 
@@ -53,7 +54,7 @@ interface PlaylistRepository {
 
 class RealPlaylistRepository(
     private val contentResolver: ContentResolver
-) : PlaylistRepository {
+) :  PlaylistRepository {
 
     override fun createPlaylist(name: String?): Long {
         if (name.isNullOrEmpty()) {
@@ -152,6 +153,7 @@ class RealPlaylistRepository(
                 "$PLAYLIST_AUDIO_ID = ?",
                 arrayOf(id.toString())
         )
+        log("removed")
     }
 
     override fun deletePlaylist(playlistId: Long): Int {
