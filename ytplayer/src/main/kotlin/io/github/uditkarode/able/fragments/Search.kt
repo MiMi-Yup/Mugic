@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -158,20 +159,20 @@ class Search : Fragment(), CoroutineScope {
                         var query = text.toString()
                         if (query.isEmpty())
                             query = "songs"
-//                        val useYtMusic: Boolean = when {
-//                            text.startsWith("!") -> {
-//                                query = text.toString().replaceFirst(Regex("^!\\s*"), "")
-//                                true
-//                            }
-//
-//                            text.startsWith("?") -> {
-//                                query = text.toString().replaceFirst(Regex("^?\\s*"), "")
-//                                false
-//                            }
-//
-//                            else -> (PreferenceManager.getDefaultSharedPreferences(requireContext())
-//                                .getString("source_key", "Youtube Music") == "Youtube Music")
-//                        }
+                        /*val useYtMusic: Boolean = when {
+                            text.startsWith("!") -> {
+                                query = text.toString().replaceFirst(Regex("^!\\s*"), "")
+                                true
+                            }
+
+                            text.startsWith("?") -> {
+                                query = text.toString().replaceFirst(Regex("^?\\s*"), "")
+                                false
+                            }
+
+                            else -> (PreferenceManager.getDefaultSharedPreferences(requireContext())
+                                .getString("source_key", "Youtube Music") == "Youtube Music")
+                        }*/
 
                         val useYtMusic = false
 
@@ -179,6 +180,7 @@ class Search : Fragment(), CoroutineScope {
                             if (useYtMusic) {
                                 when (sp.getString("mode", "Music")) {
                                     "Music" -> {
+                                        Log.i("Music", "Music")
                                         val extractor:
                                                 SearchExtractor =  YouTube.getSearchExtractor(
                                             query, singletonList(
@@ -187,6 +189,8 @@ class Search : Fragment(), CoroutineScope {
                                         )
 
                                         extractor.fetchPage()
+
+                                        Log.i("Music", extractor.initialPage.items.size.toString())
 
                                         for (song in extractor.initialPage.items) {
                                             val ex = song as StreamInfoItem
@@ -206,6 +210,7 @@ class Search : Fragment(), CoroutineScope {
                                     }
 
                                     "Album" -> {
+                                        Log.i("Album", "Album")
                                         val extractor = YouTube.getSearchExtractor(
                                             query, singletonList(
                                                 YoutubeSearchQueryHandlerFactory.MUSIC_ALBUMS
@@ -232,6 +237,7 @@ class Search : Fragment(), CoroutineScope {
                                     }
 
                                     "Playlists" -> {
+                                        Log.i("Playlists", "Playlists")
                                         val extractor = if (query.startsWith("https://"))
                                             YouTube.getPlaylistExtractor(query)
                                         else

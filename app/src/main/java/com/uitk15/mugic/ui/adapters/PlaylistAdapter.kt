@@ -30,6 +30,8 @@ class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent.inflateWithBinding(R.layout.item_playlist))
     }
