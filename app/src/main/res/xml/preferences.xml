@@ -18,7 +18,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
-        android:defaultValue="light"
+        android:defaultValue="black"
         android:entries="@array/pref_theme_entries"
         android:entryValues="@array/pref_theme_values"
         android:key="theme_preference"
@@ -34,6 +34,16 @@
         android:summary="@string/choose_start_page"
         android:title="@string/start_page"
         app:iconSpaceReserved="false" />
+
+    <ListPreference
+        android:defaultValue="Download"
+        android:entries="@array/modes"
+        android:entryValues="@array/modes"
+        android:summary="@string/play_mode_sum"
+        app:iconSpaceReserved="false"
+        android:title="@string/play_mode"
+        android:key="mode_key"
+        />
 
     <CheckBoxPreference
         android:defaultValue="true"

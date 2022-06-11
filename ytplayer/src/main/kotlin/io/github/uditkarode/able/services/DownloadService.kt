@@ -47,6 +47,8 @@ import kotlinx.coroutines.*
 import org.schabi.newpipe.extractor.stream.StreamInfo
 import java.io.File
 import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * The JobIntentService that downloads songs when the play mode is set to download mode
@@ -61,6 +63,12 @@ class DownloadService : JobIntentService(), CoroutineScope {
         fun enqueueDownload(context: Context, intent: Intent) {
             enqueueWork(context, DownloadService::class.java, JOB_ID, intent)
         }
+
+        private var _isDownloaded = false
+        public var queueDownload: Queue<String>? = null
+        public var isDownloaded = false
+            get() = _isDownloaded
+            private set
     }
 
     private var currentIndex = 1
@@ -77,6 +85,7 @@ class DownloadService : JobIntentService(), CoroutineScope {
     override fun onCreate() {
         createNotificationChannel()
         super.onCreate()
+        if (queueDownload == null) queueDownload = LinkedList<String>()
         if (fetch == null) {
             fetch = getInstance(
                 FetchConfiguration.Builder(this)
@@ -120,7 +129,7 @@ class DownloadService : JobIntentService(), CoroutineScope {
             }
         }*/
 
-        launch(Dispatchers.IO) {
+        GlobalScope.launch(Dispatchers.Default) {
             val bundle = Bundle()
             val id = song.youtubeLink.run {
                 this.substring(this.lastIndexOf("=") + 1)
@@ -208,53 +217,57 @@ class DownloadService : JobIntentService(), CoroutineScope {
                             else Format.MODE_WEBM*/
 
                         val format = Format.MODE_MP3
+                        val pathFile = "${Constants.ableSongDir.absolutePath}/../Music/$id.mp3"
 
                         if (format == Format.MODE_MP3 || Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
                             command += "-vn -ab ${bitrate}k -c:a mp3 -ar 44100 "
 
-                        command += "\"${Constants.ableSongDir.absolutePath}/../Music/$id."
-                        command += if (format == Format.MODE_MP3) "mp3\"" else "$ext\""
+                        command += "\"${pathFile}\""
                         Log.e("asd", "DOING")
                         //error la ne: dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/base.apk"],nativeLibraryDirectories=[/data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/lib/x86, /data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/base.apk!/lib/x86, /system/lib]]] couldn't find "libmobileffmpeg_abidetect.so"
-                        when (val rc = FFmpeg.execute(command)) {
-                            Config.RETURN_CODE_SUCCESS -> {
-                                File(target).delete()
-                                if (currentIndex == songQueue.size) {
-                                    (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
-                                        it.cancel(2)
+                        Thread(object : Runnable {
+                            private val ownCommnad = command
+                            private val ownPathFile = pathFile
+                            override fun run() {
+                                when (val rc = FFmpeg.execute(ownCommnad)) {
+                                    Config.RETURN_CODE_SUCCESS -> {
+                                        File(target).delete()
+                                        queueDownload?.add(ownPathFile)
+                                        if (currentIndex == songQueue.size) {
+                                            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
+                                                it.cancel(2)
+                                            }
+                                            songQueue.clear()
+                                            _isDownloaded = true
+                                            application.onTerminate()
+                                            stopSelf()
+                                        } else {
+                                            (++currentIndex).also {
+                                                builder.setSubText("$it of ${songQueue.size}")
+                                            }
+                                            download(
+                                                songQueue[currentIndex - 1]
+                                            )
+                                        }
                                     }
-                                    song.resultReceiver.send(123, bundle)
-                                    if (format == Format.MODE_MP3)
-                                        Shared.addThumbnails(
-                                            "$target.mp3",
-                                            context = this@DownloadService
+                                    Config.RETURN_CODE_CANCEL -> {
+                                        Log.e(
+                                            "ERR>",
+                                            "Command execution cancelled by user."
                                         )
-                                    songQueue.clear()
-                                    stopSelf()
-                                } else {
-                                    (++currentIndex).also {
-                                        builder.setSubText("$it of ${songQueue.size}")
                                     }
-                                    song.resultReceiver.send(123, bundle)
-                                    download(songQueue[currentIndex - 1])
+                                    else -> {
+                                        Log.e(
+                                            "ERR>",
+                                            String.format(
+                                                "Command execution failed with rc=%d and the output below.",
+                                                rc
+                                            )
+                                        )
+                                    }
                                 }
                             }
-                            Config.RETURN_CODE_CANCEL -> {
-                                Log.e(
-                                    "ERR>",
-                                    "Command execution cancelled by user."
-                                )
-                            }
-                            else -> {
-                                Log.e(
-                                    "ERR>",
-                                    String.format(
-                                        "Command execution failed with rc=%d and the output below.",
-                                        rc
-                                    )
-                                )
-                            }
-                        }
+                        }).start()
                     }
 
                     override fun onDeleted(download: Download) {}
@@ -272,7 +285,7 @@ class DownloadService : JobIntentService(), CoroutineScope {
                         error: Error,
                         throwable: Throwable?
                     ) {
-
+                        _isDownloaded = true
                     }
 
                     override fun onPaused(download: Download) {

@@ -44,6 +44,7 @@ import com.uitk15.mugic.models.MediaID
 import com.uitk15.mugic.ui.activities.MainActivity
 import com.uitk15.mugic.ui.activities.SettingsActivity
 import com.uitk15.mugic.ui.dialogs.AboutDialog
+import com.uitk15.mugic.ui.dialogs.ReloadDialog
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
 import com.uitk15.mugic.util.AutoClearedValue
 import org.koin.android.ext.android.inject
@@ -86,7 +87,10 @@ class MainFragment : Fragment() {
             setDisplayHomeAsUpEnabled(false)
         }
 
-        binding.toolbarLayout.btnSearch.setOnClickListener { safeActivity.addFragment(fragment = SearchFragment()) }
+        binding.toolbarLayout.btnSearch.setOnClickListener {
+            MainActivity.isShowSearching = true
+            safeActivity.addFragment(fragment = SearchFragment())
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -103,6 +107,7 @@ class MainFragment : Fragment() {
         when (item.itemId) {
             R.id.menu_item_about -> AboutDialog.show(safeActivity)
             R.id.menu_item_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
+            R.id.menu_reload_songs -> ReloadDialog.show(safeActivity)
         }
         return super.onOptionsItemSelected(item)
     }

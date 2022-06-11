@@ -18,12 +18,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.rxkprefs.Pref
+import com.uitk15.mugic.PREF_LAST_FOLDER
+import com.uitk15.mugic.PREF_MODE_YT
 import com.uitk15.mugic.R
+import com.uitk15.mugic.constants.ModeYoutube
 import com.uitk15.mugic.databinding.FragmentSearchBinding
 import com.uitk15.mugic.extensions.*
 import com.uitk15.mugic.ui.adapters.AlbumAdapter
@@ -36,11 +41,13 @@ import io.github.uditkarode.able.activities.MainActivity
 import io.github.uditkarode.able.fragments.Search
 import io.github.uditkarode.able.models.Song
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SearchFragment : BaseNowPlayingFragment(), Search.SongCallback {
 
     private val searchViewModel by sharedViewModel<SearchViewModel>()
+    private val modeYoutube by inject<Pref<ModeYoutube>>(name = PREF_MODE_YT)
 
     private lateinit var songAdapter: SongsAdapter
     private lateinit var albumAdapter: AlbumAdapter
@@ -118,13 +125,22 @@ class SearchFragment : BaseNowPlayingFragment(), Search.SongCallback {
         }
 
         binding.floatingActionButton.setOnClickListener {
-            val intent = Intent(context, MainActivity::class.java)
-            startActivity(intent)
-//            safeActivity.addFragment(fragment = Search())
+            when(modeYoutube.get()){
+                ModeYoutube.DOWNLOAD -> safeActivity.addFragment(fragment = Search())
+                ModeYoutube.STREAM -> {
+                    val intent = Intent(context, MainActivity::class.java)
+                    startActivity(intent)
+                }
+            }
         }
     }
 
     override fun sendItem(song: Song, mode: String) {
         TODO("Not yet implemented")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        com.uitk15.mugic.ui.activities.MainActivity.isShowSearching = false
     }
 }

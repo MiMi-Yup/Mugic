@@ -16,6 +16,7 @@ package com.uitk15.mugic.ui.activities
 
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -38,6 +39,7 @@ import com.uitk15.mugic.models.MediaID
 import com.uitk15.mugic.repository.SongsRepository
 import com.uitk15.mugic.ui.activities.base.PermissionsActivity
 import com.uitk15.mugic.ui.dialogs.DeleteSongDialog
+import com.uitk15.mugic.ui.dialogs.ReloadDialog
 import com.uitk15.mugic.ui.fragments.BottomControlsFragment
 import com.uitk15.mugic.ui.fragments.MainFragment
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
@@ -50,12 +52,15 @@ import io.github.uditkarode.able.models.Song
 import io.github.uditkarode.able.services.DownloadService
 import io.github.uditkarode.able.services.ServiceResultReceiver
 import io.reactivex.functions.Consumer
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Search.SongCallback, ServiceResultReceiver.Receiver {
+class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Search.SongCallback, ServiceResultReceiver.Receiver, CoroutineScope {
 
     private val viewModel by viewModel<MainViewModel>()
     private val songsRepository by inject<SongsRepository>()
@@ -66,6 +71,11 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
     private lateinit var mServiceResultReceiver: ServiceResultReceiver
     private lateinit var home: Home
+
+    override val coroutineContext: CoroutineContext
+        get() = EmptyCoroutineContext
+
+    private var hasCoroutine = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(appThemePref.get().themeRes)
@@ -227,11 +237,11 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
 
         var currentMode = MusicMode.download
 
-        if(song.ytmThumbnail.contains("googleusercontent")) //set resolution for youtube music art
-        {
-            song.ytmThumbnail = song.ytmThumbnail.replace("w120","w1500")
-            song.ytmThumbnail = song.ytmThumbnail.replace("h120","h1500")
-        }
+                if (song.ytmThumbnail.contains("googleusercontent")) //set resolution for youtube music art
+                {
+                    song.ytmThumbnail = song.ytmThumbnail.replace("w120", "w1500")
+                    song.ytmThumbnail = song.ytmThumbnail.replace("h120", "h1500")
+                }
 
         when (currentMode) {
             MusicMode.download -> {
@@ -244,37 +254,52 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
                     .putStringArrayListExtra("song", songL)
                     .putExtra("receiver", mServiceResultReceiver)
                 DownloadService.enqueueDownload(this, serviceIntentService)
+
+                if (!hasCoroutine) {
+                    hasCoroutine = true
+                    GlobalScope.launch(Dispatchers.Default) {
+                        while (!DownloadService.isDownloaded) {
+                            if (DownloadService.queueDownload != null) {
+                                if (DownloadService.queueDownload!!.size > 0) {
+                                    addMusic(DownloadService.queueDownload!!.poll())
+                                }
+                            }
+                            delay(500L)
+                        }
+                        hasCoroutine = false
+
+                        while (DownloadService.queueDownload!!.size > 0) {
+                            addMusic(DownloadService.queueDownload!!.poll())
+                        }
+
+                        while (isShowSearching) {
+                            delay(2000L)
+                        }
+
+                        ReloadDialog.show(this@MainActivity, false)
+                    }
+                }
+
                 Toast.makeText(
                     this@MainActivity,
                     "${song.name} ${getString(io.github.uditkarode.able.R.string.dl_added)}",
                     Toast.LENGTH_SHORT
                 ).show()
-                /*
-                    * takes user back to the home screen when download starts *
-                    mainContent.currentItem = -1
-                    bottomNavigation.menu.findItem(R.id.home_menu)?.isChecked = true
-                 */
             }
-
-//            MusicMode.stream -> {
-//                home.streamAudio(song, false)
-//                runOnUiThread {
-//                    loadingEvent(true)
-//                }
-//            }
-//
-//            MusicMode.both -> {
-//                home.streamAudio(song, true)
-//                runOnUiThread {
-//                    loadingEvent(true)
-//                }
-//            }
         }
 
 
     }
 
+    private fun addMusic(pathFile: String) {
+        sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(File(pathFile))))
+    }
+
     override fun onReceiveResult(resultCode: Int) {
         //TODO("Not yet implemented")
+    }
+
+    companion object {
+        public var isShowSearching = false
     }
 }

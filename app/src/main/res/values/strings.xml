@@ -66,5 +66,10 @@
     <string name="load_artist_image_summary">Load artist images from Last.fm</string>
     <string name="load_album_image_summary">Load album images from Last.fm (only if not available locally)</string>
 
+    <string name="reload_title">Reload App</string>
+    <string name="accept">OK</string>
+    <string name="reload_message">Reload Mugic to update list music</string>
 
+    <string name="play_mode">Mode</string>
+    <string name="play_mode_sum">Choose your desired way of playing songs.</string>
 </resources>

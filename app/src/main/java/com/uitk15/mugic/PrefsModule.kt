@@ -19,13 +19,9 @@ import android.os.Environment.DIRECTORY_MUSIC
 import android.os.Environment.getExternalStoragePublicDirectory
 import com.afollestad.rxkprefs.RxkPrefs
 import com.afollestad.rxkprefs.rxkPrefs
-import com.uitk15.mugic.constants.AlbumSortOrder
+import com.uitk15.mugic.constants.*
 import com.uitk15.mugic.constants.AlbumSortOrder.ALBUM_A_Z
-import com.uitk15.mugic.constants.AppThemes
-import com.uitk15.mugic.constants.AppThemes.LIGHT
-import com.uitk15.mugic.constants.SongSortOrder
 import com.uitk15.mugic.constants.SongSortOrder.SONG_A_Z
-import com.uitk15.mugic.constants.StartPage
 import com.uitk15.mugic.constants.StartPage.SONGS
 import org.koin.dsl.module.module
 
@@ -34,32 +30,48 @@ const val PREF_SONG_SORT_ORDER = "song_sort_order"
 const val PREF_ALBUM_SORT_ORDER = "album_sort_order"
 const val PREF_START_PAGE = "start_page_preference"
 const val PREF_LAST_FOLDER = "last_folder"
+const val PREF_MODE_YT = "mode_key"
 
 val prefsModule = module {
     single { rxkPrefs(get<Application>()) }
 
     factory(name = PREF_SONG_SORT_ORDER) {
-        get<RxkPrefs>().enum(PREF_SONG_SORT_ORDER, SONG_A_Z,
-                SongSortOrder.Companion::fromString, SongSortOrder.Companion::toString)
+        get<RxkPrefs>().enum(
+            PREF_SONG_SORT_ORDER, SONG_A_Z,
+            SongSortOrder.Companion::fromString, SongSortOrder.Companion::toString
+        )
     }
 
     factory(name = PREF_ALBUM_SORT_ORDER) {
-        get<RxkPrefs>().enum(PREF_ALBUM_SORT_ORDER, ALBUM_A_Z,
-                AlbumSortOrder.Companion::fromString, AlbumSortOrder.Companion::toString)
+        get<RxkPrefs>().enum(
+            PREF_ALBUM_SORT_ORDER, ALBUM_A_Z,
+            AlbumSortOrder.Companion::fromString, AlbumSortOrder.Companion::toString
+        )
     }
 
     factory(name = PREF_APP_THEME) {
-        get<RxkPrefs>().enum(PREF_APP_THEME, LIGHT,
-                AppThemes.Companion::fromString, AppThemes.Companion::toString)
+        get<RxkPrefs>().enum(
+            PREF_APP_THEME, AppThemes.BLACK,
+            AppThemes.Companion::fromString, AppThemes.Companion::toString
+        )
     }
 
     factory(name = PREF_START_PAGE) {
-        get<RxkPrefs>().enum(PREF_START_PAGE, SONGS,
-                StartPage.Companion::fromString, StartPage.Companion::toString)
+        get<RxkPrefs>().enum(
+            PREF_START_PAGE, SONGS,
+            StartPage.Companion::fromString, StartPage.Companion::toString
+        )
     }
 
     factory(name = PREF_LAST_FOLDER) {
         val defaultFolder = getExternalStoragePublicDirectory(DIRECTORY_MUSIC).path
         get<RxkPrefs>().string(PREF_LAST_FOLDER, defaultFolder)
+    }
+
+    factory(name = PREF_MODE_YT) {
+        get<RxkPrefs>().enum(
+            PREF_MODE_YT, ModeYoutube.DOWNLOAD,
+            ModeYoutube.Companion::fromString, ModeYoutube.Companion::toString
+        )
     }
 }

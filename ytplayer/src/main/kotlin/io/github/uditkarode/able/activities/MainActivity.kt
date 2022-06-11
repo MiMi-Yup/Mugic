@@ -30,6 +30,7 @@ import android.text.Html
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
 import androidx.viewpager.widget.ViewPager
