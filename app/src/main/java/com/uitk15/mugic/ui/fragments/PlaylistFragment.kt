@@ -46,9 +46,7 @@ import io.github.uditkarode.able.models.Song
 import io.github.uditkarode.able.models.SongState
 import io.github.uditkarode.able.services.MusicService
 import io.github.uditkarode.able.services.SpotifyImportService
-import io.github.uditkarode.able.utils.Shared
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import okhttp3.internal.toImmutableList
 
 class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback, MusicService.MusicClient {
     var binding by AutoClearedValue<FragmentPlaylistsBinding>(this)
@@ -164,7 +162,7 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
             isImporting = false
             WorkManager.getInstance(requireContext()).cancelUniqueWork("SpotifyImport")
             (binding.recyclerView.adapter as PlaylistAdapter).also { playlistAdapter ->
-                playlistAdapter.updateData(Shared.getPlaylists().toImmutableList() as List<Playlist>)
+                /*playlistAdapter.updateData(playlistRepository.getPlaylists(MediaID.CALLER_SELF))*/
                 binding.floatingActionButton.setImageResource(io.github.uditkarode.able.R.drawable.ic_spot)
             }
         }
