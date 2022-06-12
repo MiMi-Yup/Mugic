@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="200dp"
+            android:layout_marginBottom="100dp"
             android:background="@drawable/bg_playlist_fab"
             android:drawableStart="@drawable/ic_add"
             android:drawablePadding="8dp"
@@ -40,17 +40,6 @@
             android:textSize="16sp" />
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floating_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="130dp"
-            android:layout_marginEnd="20dp"
-            android:foreground="@drawable/ic_spot"
-            android:tint="@color/black"
-            app:fabSize="auto"
-            />
     </FrameLayout>
 
 

@@ -17,6 +17,7 @@ package com.uitk15.mugic.ui.fragments
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,13 +48,16 @@ import io.github.uditkarode.able.models.SongState
 import io.github.uditkarode.able.services.MusicService
 import io.github.uditkarode.able.services.SpotifyImportService
 import io.github.uditkarode.able.utils.Shared
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import okhttp3.internal.toImmutableList
+import kotlin.coroutines.CoroutineContext
 
-class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback, MusicService.MusicClient {
+class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback,
+    CoroutineScope {
     var binding by AutoClearedValue<FragmentPlaylistsBinding>(this)
     private lateinit var playlistAdapter: PlaylistAdapter
-    private var isImporting = false
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Main
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,84 +95,40 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
         binding.btnNewPlaylist.setOnClickListener {
             CreatePlaylistDialog.show(this@PlaylistFragment)
         }
-
-        var inputId = ""
-        binding.floatingActionButton.setOnClickListener {
-            if (!isImporting) {
-                MaterialDialog(requireContext()).show {
-                    title(io.github.uditkarode.able.R.string.spot_title)
-                    input(waitForPositiveButton = false) { dialog, textInp ->
-                        val inputField = dialog.getInputField()
-                        val validUrl =
-                            textInp.toString().replace("https://", "")
-                                .split("/").toMutableList()
-                        var isValid = true
-                        if (validUrl.size <= 2 || validUrl[0] != "open.spotify.com" || validUrl[1] != "playlist") {
-                            isValid = false
-                        } else if (validUrl[2].contains("?")) {
-                            inputId = validUrl[2].split("?")[0]
-                        } else {
-                            inputId = validUrl[2]
-                        }
-
-                        inputField.error = if (isValid) null else getString(io.github.uditkarode.able.R.string.spot_invalid)
-                        dialog.setActionButtonEnabled(WhichButton.POSITIVE, isValid)
-                    }
-                    getInputLayout().boxBackgroundColor = Color.parseColor("#000000")
-                    positiveButton(io.github.uditkarode.able.R.string.pos) {
-                        val builder = Data.Builder()
-                        builder.put("inputId", inputId)
-                        WorkManager.getInstance(view.context)
-                            .beginUniqueWork(
-                                "SpotifyImport",
-                                ExistingWorkPolicy.REPLACE,
-                                OneTimeWorkRequest.Builder(SpotifyImportService::class.java)
-                                    .setInputData(builder.build())
-                                    .build()
-                            ).enqueue()
-                        Toast.makeText(
-                            requireContext(), getString(io.github.uditkarode.able.R.string.spot_importing), Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            } else {
-                MusicService.registeredClients.forEach { it.spotifyImportChange(false) }
-                WorkManager.getInstance(requireContext()).cancelUniqueWork("SpotifyImport")
-            }
-        }
     }
 
     override fun onPlaylistCreated() = mediaItemFragmentViewModel.reloadMediaItems()
 
-    override fun playStateChanged(state: SongState) {}
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineContext.cancelChildren()
+    }
 
-    override fun songChanged() {}
-
-    override fun durationChanged(duration: Int) {}
-
-    override fun isExiting() {}
-
-    override fun queueChanged(arrayList: ArrayList<Song>) {}
-
-    override fun shuffleRepeatChanged(onShuffle: Boolean, onRepeat: Boolean) {}
-
-    override fun indexChanged(index: Int) {}
-
-    override fun isLoading(doLoad: Boolean) {}
-
-    override fun spotifyImportChange(starting: Boolean) {
-        if (starting) {
-            isImporting = true
-            binding.floatingActionButton.setImageResource(io.github.uditkarode.able.R.drawable.ic_cancle_action)
-        } else {
-            isImporting = false
-            WorkManager.getInstance(requireContext()).cancelUniqueWork("SpotifyImport")
-            (binding.recyclerView.adapter as PlaylistAdapter).also { playlistAdapter ->
-                playlistAdapter.updateData(Shared.getPlaylists().toImmutableList() as List<Playlist>)
-                binding.floatingActionButton.setImageResource(io.github.uditkarode.able.R.drawable.ic_spot)
-            }
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if(isVisibleToUser && isResumed){
+            onResume()
         }
     }
 
-    override fun serviceStarted() {}
+    override fun onResume() {
+        super.onResume()
+        if(!userVisibleHint)return
+
+        GlobalScope.launch(Dispatchers.Main){
+            while(true) {
+                try{
+                    mediaItemFragmentViewModel.reloadMediaItems()
+                    mediaItemFragmentViewModel.mediaItems
+                        .observe(this@PlaylistFragment.viewLifecycleOwner) { list ->
+                            @Suppress("UNCHECKED_CAST")
+                            playlistAdapter.updateData(list as List<Playlist>)
+                        }
+                }
+                catch (ex:Exception){}
+
+                delay(1500L)
+            }
+        }
+    }
 }

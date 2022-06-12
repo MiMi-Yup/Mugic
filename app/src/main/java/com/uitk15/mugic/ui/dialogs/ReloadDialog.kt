@@ -28,7 +28,7 @@ class ReloadDialog : DialogFragment() {
             title(R.string.reload_title)
             message(R.string.reload_message)
             positiveButton(R.string.accept) {
-                if (reload) {
+                /*if (reload) {
                     activity?.contentResolver?.delete(
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                         null,
@@ -40,7 +40,7 @@ class ReloadDialog : DialogFragment() {
                     for (item in filesExists) {
                         loadMusicDownloaded(arrayOf(item.absolutePath), arrayOf(".mp3"))
                     }
-                }
+                }*/
 
                 activity!!.finishAndRemoveTask()
                 startActivity(activity!!.intent)
