@@ -35,13 +35,17 @@ import com.uitk15.mugic.ui.adapters.SongsAdapter
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
 import com.uitk15.mugic.ui.listeners.SortMenuListener
 import com.uitk15.mugic.util.AutoClearedValue
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import kotlin.coroutines.CoroutineContext
 
-class SongsFragment : MediaItemFragment() {
+class SongsFragment : MediaItemFragment(), CoroutineScope {
     private lateinit var songsAdapter: SongsAdapter
     private val sortOrderPref by inject<Pref<SongSortOrder>>(name = PREF_SONG_SORT_ORDER)
 
     var binding by AutoClearedValue<LayoutRecyclerviewBinding>(this)
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Main
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,5 +115,38 @@ class SongsFragment : MediaItemFragment() {
         override fun numOfSongs() {}
 
         override fun sortZA() = sortOrderPref.set(SONG_Z_A)
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if(isVisibleToUser && isResumed){
+            onResume()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!userVisibleHint)return
+
+        GlobalScope.launch(Dispatchers.Main){
+            while(true) {
+                try{
+                    mediaItemFragmentViewModel.reloadMediaItems()
+                    mediaItemFragmentViewModel.mediaItems
+                        .observe(this@SongsFragment.viewLifecycleOwner) { list ->
+                            @Suppress("UNCHECKED_CAST")
+                            songsAdapter.updateData(list as List<Song>)
+                        }
+                }
+                catch (ex:Exception){}
+
+                delay(1500L)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineContext.cancelChildren()
     }
 }

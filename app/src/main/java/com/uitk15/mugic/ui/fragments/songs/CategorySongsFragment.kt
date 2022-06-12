@@ -18,6 +18,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uitk15.mugic.R
 import com.uitk15.mugic.playback.TimberMusicService.Companion.TYPE_PLAYLIST
@@ -34,13 +35,22 @@ import com.uitk15.mugic.extensions.toSongIds
 import com.uitk15.mugic.models.CategorySongData
 import com.uitk15.mugic.models.Song
 import com.uitk15.mugic.ui.adapters.SongsAdapter
+import com.uitk15.mugic.ui.fragments.base.CoroutineFragment
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
 import com.uitk15.mugic.util.AutoClearedValue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
-class CategorySongsFragment : MediaItemFragment() {
+class CategorySongsFragment : MediaItemFragment(), CoroutineScope {
     private lateinit var songsAdapter: SongsAdapter
     private lateinit var categorySongData: CategorySongData
     var binding by AutoClearedValue<FragmentCategorySongsBinding>(this)
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Main
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,5 +88,23 @@ class CategorySongsFragment : MediaItemFragment() {
                     @Suppress("UNCHECKED_CAST")
                     songsAdapter.updateData(list as List<Song>)
                 }
+
+        launch(Dispatchers.Main){
+            while(true) {
+                mediaItemFragmentViewModel.reloadMediaItems()
+                mediaItemFragmentViewModel.mediaItems
+                    .observe(this@CategorySongsFragment.viewLifecycleOwner) { list ->
+                        @Suppress("UNCHECKED_CAST")
+                        songsAdapter.updateData(list as List<Song>)
+                    }
+
+                delay(1500L)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineContext.cancelChildren()
     }
 }

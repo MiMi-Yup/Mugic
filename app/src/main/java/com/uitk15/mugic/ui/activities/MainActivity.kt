@@ -60,7 +60,8 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Search.SongCallback, ServiceResultReceiver.Receiver, CoroutineScope {
+class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Search.SongCallback,
+    ServiceResultReceiver.Receiver, CoroutineScope {
 
     private val viewModel by viewModel<MainViewModel>()
     private val songsRepository by inject<SongsRepository>()
@@ -237,11 +238,11 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
 
         var currentMode = MusicMode.download
 
-                if (song.ytmThumbnail.contains("googleusercontent")) //set resolution for youtube music art
-                {
-                    song.ytmThumbnail = song.ytmThumbnail.replace("w120", "w1500")
-                    song.ytmThumbnail = song.ytmThumbnail.replace("h120", "h1500")
-                }
+        if (song.ytmThumbnail.contains("googleusercontent")) //set resolution for youtube music art
+        {
+            song.ytmThumbnail = song.ytmThumbnail.replace("w120", "w1500")
+            song.ytmThumbnail = song.ytmThumbnail.replace("h120", "h1500")
+        }
 
         when (currentMode) {
             MusicMode.download -> {
@@ -258,21 +259,20 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
                 if (!hasCoroutine) {
                     hasCoroutine = true
                     GlobalScope.launch(Dispatchers.Default) {
-                        while (!DownloadService.isDownloaded) {
-                            if (DownloadService.queueDownload != null) {
-                                if (DownloadService.queueDownload!!.size > 0) {
-                                    addMusic(DownloadService.queueDownload!!.poll())
-                                }
-                            }
-                            delay(500L)
-                        }
-                        hasCoroutine = false
-
-                        while (DownloadService.queueDownload!!.size > 0) {
-                            addMusic(DownloadService.queueDownload!!.poll())
-                        }
-
                         while (isShowSearching) {
+                            while (!DownloadService.isDownloaded) {
+                                if (DownloadService.queueDownload != null) {
+                                    if (DownloadService.queueDownload!!.size > 0) {
+                                        addMusic(DownloadService.queueDownload!!.poll())
+                                    }
+                                }
+                                delay(500L)
+                            }
+                            hasCoroutine = false
+
+                            while (DownloadService.queueDownload!!.size > 0) {
+                                addMusic(DownloadService.queueDownload!!.poll())
+                            }
                             delay(2000L)
                         }
 

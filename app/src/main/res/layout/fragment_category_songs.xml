@@ -34,6 +34,13 @@
             android:maxLines="1"
             android:text="@{@plurals/number_songs(categorySongData.songCount, categorySongData.songCount)}" />
 
+        <Button
+            android:id="@+id/check"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="BẤM VÀO ĐÂY ĐỂ TEST"
+            android:textColor="@color/white" />
+
         <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"

@@ -142,8 +142,7 @@
           android:clickable="true"
           android:focusable="true"
           android:padding="5dp"
-          android:scaleType="centerInside"
-          />
+          android:scaleType="centerInside" />
 
     </RelativeLayout>
 
