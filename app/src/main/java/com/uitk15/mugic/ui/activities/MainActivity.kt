@@ -39,7 +39,6 @@ import com.uitk15.mugic.models.MediaID
 import com.uitk15.mugic.repository.SongsRepository
 import com.uitk15.mugic.ui.activities.base.PermissionsActivity
 import com.uitk15.mugic.ui.dialogs.DeleteSongDialog
-import com.uitk15.mugic.ui.dialogs.ReloadDialog
 import com.uitk15.mugic.ui.fragments.BottomControlsFragment
 import com.uitk15.mugic.ui.fragments.MainFragment
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
@@ -259,8 +258,7 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
                 if (!hasCoroutine) {
                     hasCoroutine = true
                     GlobalScope.launch(Dispatchers.Default) {
-                        while (isShowSearching) {
-                            while (!DownloadService.isDownloaded) {
+                        while (!DownloadService.isDownloaded) {
                                 if (DownloadService.queueDownload != null) {
                                     if (DownloadService.queueDownload!!.size > 0) {
                                         addMusic(DownloadService.queueDownload!!.poll())
@@ -273,10 +271,6 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
                             while (DownloadService.queueDownload!!.size > 0) {
                                 addMusic(DownloadService.queueDownload!!.poll())
                             }
-                            delay(2000L)
-                        }
-
-                        ReloadDialog.show(this@MainActivity, false)
                     }
                 }
 
