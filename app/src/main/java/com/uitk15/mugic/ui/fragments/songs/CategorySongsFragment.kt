@@ -34,6 +34,7 @@ import com.uitk15.mugic.extensions.safeActivity
 import com.uitk15.mugic.extensions.toSongIds
 import com.uitk15.mugic.models.CategorySongData
 import com.uitk15.mugic.models.Song
+import com.uitk15.mugic.repository.RealPlaylistRepository
 import com.uitk15.mugic.ui.adapters.SongsAdapter
 import com.uitk15.mugic.ui.fragments.base.CoroutineFragment
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
@@ -42,6 +43,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -49,6 +51,8 @@ class CategorySongsFragment : MediaItemFragment(), CoroutineScope {
     private lateinit var songsAdapter: SongsAdapter
     private lateinit var categorySongData: CategorySongData
     var binding by AutoClearedValue<FragmentCategorySongsBinding>(this)
+
+    private val playlistRepository by inject<RealPlaylistRepository>()
 
     override val coroutineContext: CoroutineContext = Dispatchers.Main
 
@@ -97,6 +101,12 @@ class CategorySongsFragment : MediaItemFragment(), CoroutineScope {
                         @Suppress("UNCHECKED_CAST")
                         songsAdapter.updateData(list as List<Song>)
                     }
+
+                val songCount = playlistRepository.getSongCountForPlaylist(categorySongData.id)
+                if(songCount != categorySongData.songCount){
+                    categorySongData = CategorySongData(categorySongData.title, songCount, categorySongData.type, categorySongData.id)
+                    binding.categorySongData = categorySongData
+                }
 
                 delay(1500L)
             }

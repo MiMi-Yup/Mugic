@@ -171,7 +171,7 @@ class RealPlaylistRepository(
                 arrayOf(BaseColumns._ID, MediaStore.Audio.PlaylistsColumns.NAME), null, null, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER)
     }
 
-    private fun getSongCountForPlaylist(playlistId: Long): Int {
+    public fun getSongCountForPlaylist(playlistId: Long): Int {
         val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
         return contentResolver.query(uri, arrayOf(_ID), MUSIC_ONLY_SELECTION, null, null)?.use {
             if (it.moveToFirst()) {
