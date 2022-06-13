@@ -73,9 +73,7 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
     private lateinit var home: Home
 
     override val coroutineContext: CoroutineContext
-        get() = EmptyCoroutineContext
-
-    private var hasCoroutine = false
+        get() = Dispatchers.Default
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(appThemePref.get().themeRes)
@@ -250,22 +248,24 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
                     .putExtra("receiver", mServiceResultReceiver)
                 DownloadService.enqueueDownload(this, serviceIntentService)
 
-                if (!hasCoroutine) {
-                    hasCoroutine = true
+                if (!coroutineContext.isActive) {
                     GlobalScope.launch(Dispatchers.Default) {
                         while (!DownloadService.isDownloaded) {
-                                if (DownloadService.queueDownload != null) {
-                                    if (DownloadService.queueDownload!!.size > 0) {
-                                        addMusic(DownloadService.queueDownload!!.poll())
-                                    }
+                            if (DownloadService.queueDownload != null) {
+                                if (DownloadService.queueDownload!!.size > 0) {
+                                    addMusic(DownloadService.queueDownload!!.poll())
                                 }
-                                delay(500L)
                             }
-                            hasCoroutine = false
+                            delay(500L)
+                        }
 
-                            while (DownloadService.queueDownload!!.size > 0) {
-                                addMusic(DownloadService.queueDownload!!.poll())
-                            }
+                        while (DownloadService.queueDownload!!.size > 0) {
+                            addMusic(DownloadService.queueDownload!!.poll())
+                        }
+
+                        synchronized(hasUpdate) {
+                            hasUpdate = true
+                        }
                     }
                 }
 
@@ -284,11 +284,18 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
         sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(File(pathFile))))
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineContext.cancelChildren()
+    }
+
     override fun onReceiveResult(resultCode: Int) {
         //TODO("Not yet implemented")
     }
 
     companion object {
         public var isShowSearching = false
+        public var hasUpdate = false
+        public var blockGlobalScope = false
     }
 }

@@ -69,7 +69,6 @@ class ArtistDetailFragment : MediaItemFragment() {
         binding.recyclerView.adapter = adapter
 
         mediaItemFragmentViewModel.mediaItems
-                .filter { it.isNotEmpty() }
                 .observe(this) { list ->
                     @Suppress("UNCHECKED_CAST")
                     adapter.updateData(list as List<Song>)

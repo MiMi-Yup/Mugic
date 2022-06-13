@@ -35,14 +35,12 @@ import com.uitk15.mugic.extensions.toSongIds
 import com.uitk15.mugic.models.CategorySongData
 import com.uitk15.mugic.models.Song
 import com.uitk15.mugic.repository.RealPlaylistRepository
+import com.uitk15.mugic.ui.activities.MainActivity
 import com.uitk15.mugic.ui.adapters.SongsAdapter
 import com.uitk15.mugic.ui.fragments.base.CoroutineFragment
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
 import com.uitk15.mugic.util.AutoClearedValue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -54,7 +52,7 @@ class CategorySongsFragment : MediaItemFragment(), CoroutineScope {
 
     private val playlistRepository by inject<RealPlaylistRepository>()
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main
+    override val coroutineContext: CoroutineContext = Dispatchers.Default
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,6 +66,7 @@ class CategorySongsFragment : MediaItemFragment(), CoroutineScope {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         binding.categorySongData = categorySongData
 
         songsAdapter = SongsAdapter(this).apply {
@@ -87,28 +86,35 @@ class CategorySongsFragment : MediaItemFragment(), CoroutineScope {
         }
 
         mediaItemFragmentViewModel.mediaItems
-                .filter { it.isNotEmpty() }
-                .observe(this) { list ->
-                    @Suppress("UNCHECKED_CAST")
-                    songsAdapter.updateData(list as List<Song>)
-                }
+            .observe(this) { list ->
+                @Suppress("UNCHECKED_CAST")
+                songsAdapter.updateData(list as List<Song>)
+            }
 
-        launch(Dispatchers.Main){
-            while(true) {
-                mediaItemFragmentViewModel.reloadMediaItems()
-                mediaItemFragmentViewModel.mediaItems
-                    .observe(this@CategorySongsFragment.viewLifecycleOwner) { list ->
-                        @Suppress("UNCHECKED_CAST")
-                        songsAdapter.updateData(list as List<Song>)
+        if (!coroutineContext.isActive) {
+            launch(coroutineContext) {
+                while (true) {
+                    synchronized(MainActivity.hasUpdate) {
+                        if (MainActivity.hasUpdate) {
+                            MainActivity.hasUpdate = false
+                            mediaItemFragmentViewModel.reloadMediaItems()
+
+                            val songCount =
+                                playlistRepository.getSongCountForPlaylist(categorySongData.id)
+                            if (songCount != categorySongData.songCount) {
+                                categorySongData = CategorySongData(
+                                    categorySongData.title,
+                                    songCount,
+                                    categorySongData.type,
+                                    categorySongData.id
+                                )
+                                binding.categorySongData = categorySongData
+                            }
+                        }
                     }
 
-                val songCount = playlistRepository.getSongCountForPlaylist(categorySongData.id)
-                if(songCount != categorySongData.songCount){
-                    categorySongData = CategorySongData(categorySongData.title, songCount, categorySongData.type, categorySongData.id)
-                    binding.categorySongData = categorySongData
+                    delay(2000L)
                 }
-
-                delay(1500L)
             }
         }
     }
@@ -116,5 +122,11 @@ class CategorySongsFragment : MediaItemFragment(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         coroutineContext.cancelChildren()
+        synchronized(MainActivity.hasUpdate) {
+            MainActivity.hasUpdate = true
+            synchronized(MainActivity.blockGlobalScope){
+                MainActivity.blockGlobalScope = false
+            }
+        }
     }
 }

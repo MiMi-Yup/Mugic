@@ -15,6 +15,7 @@ import com.afollestad.rxkprefs.Pref
 import com.uitk15.mugic.PREF_LAST_FOLDER
 import com.uitk15.mugic.R
 import com.uitk15.mugic.repository.RealFoldersRepository
+import com.uitk15.mugic.ui.activities.MainActivity
 import org.koin.android.ext.android.inject
 import java.io.File
 
@@ -29,18 +30,14 @@ class ReloadDialog : DialogFragment() {
             message(R.string.reload_message)
             positiveButton(R.string.accept) {
                 if (reload) {
-                    activity?.contentResolver?.delete(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        null,
-                        null
-                    )
-
                     var filesExists =
                         foldersRepository.getMediaFiles(File(lastFolderPref.get()), true)
                     for (item in filesExists) {
                         loadMusicDownloaded(arrayOf(item.absolutePath), arrayOf(item.extension))
                     }
                 }
+
+                MainActivity.hasUpdate = true
             }
             negativeButton(android.R.string.cancel)
             onDismiss {

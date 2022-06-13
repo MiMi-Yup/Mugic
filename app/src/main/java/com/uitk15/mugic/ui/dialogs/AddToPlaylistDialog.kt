@@ -28,6 +28,7 @@ import com.uitk15.mugic.models.Song
 import com.uitk15.mugic.repository.PlaylistRepository
 import com.uitk15.mugic.constants.Constants.SONGS
 import com.uitk15.mugic.extensions.toast
+import com.uitk15.mugic.ui.activities.MainActivity
 import org.koin.android.ext.android.inject
 
 class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreatedCallback {
@@ -80,6 +81,8 @@ class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreat
                             R.plurals.NNNtrackstoplaylist, inserted, inserted)
                     context.toast(message)
                 }
+
+                MainActivity.hasUpdate = true
             }
             onDismiss {
                 // Make sure the DialogFragment dismisses as well

@@ -54,6 +54,7 @@ import com.uitk15.mugic.repository.SongsRepository
 import com.uitk15.mugic.ui.activities.MainActivity
 import com.uitk15.mugic.ui.dialogs.AddToPlaylistDialog
 import com.uitk15.mugic.ui.dialogs.DeleteSongDialog
+import com.uitk15.mugic.ui.fragments.songs.SongsFragment
 import com.uitk15.mugic.ui.listeners.PopupMenuListener
 import com.uitk15.mugic.util.Event
 import java.io.IOException
@@ -71,22 +72,22 @@ class MainViewModel(
 ) : ViewModel() {
 
     val rootMediaId: LiveData<MediaID> =
-            mediaSessionConnection.isConnected.map { isConnected ->
-                if (isConnected) {
-                    MediaID().fromString(mediaSessionConnection.rootMediaId)
-                } else {
-                    null
-                }
+        mediaSessionConnection.isConnected.map { isConnected ->
+            if (isConnected) {
+                MediaID().fromString(mediaSessionConnection.rootMediaId)
+            } else {
+                null
             }
+        }
 
     val mediaController: LiveData<MediaControllerCompat> =
-            mediaSessionConnection.isConnected.map { isConnected ->
-                if (isConnected) {
-                    mediaSessionConnection.mediaController
-                } else {
-                    null
-                }
+        mediaSessionConnection.isConnected.map { isConnected ->
+            if (isConnected) {
+                mediaSessionConnection.mediaController
+            } else {
+                null
             }
+        }
 
     val navigateToMediaItem: LiveData<Event<MediaID>> get() = _navigateToMediaItem
     private val _navigateToMediaItem = MutableLiveData<Event<MediaID>>()
@@ -131,10 +132,14 @@ class MainViewModel(
                 val extraSize = songsList.size - currentIndex - 1
                 //only send 5 items in queue
                 val filteredQueue = songsList.copyOfRange(
-                        fromIndex = currentIndex,
-                        toIndex = currentIndex + if (extraSize >= 5) 5 else extraSize
+                    fromIndex = currentIndex,
+                    toIndex = currentIndex + if (extraSize >= 5) 5 else extraSize
                 )
-                CastHelper.castSongQueue(castSession, songsRepository.getSongsForIds(filteredQueue), 0)
+                CastHelper.castSongQueue(
+                    castSession,
+                    songsRepository.getSongsForIds(filteredQueue),
+                    0
+                )
                 return
             }
             CastHelper.castSong(castSession, song)
@@ -181,13 +186,16 @@ class MainViewModel(
         override fun removeFromPlaylist(song: Song, playlistId: Long) {
             playlistsRepository.removeFromPlaylist(playlistId, song.id)
             _customAction.postValue(Event(ACTION_REMOVED_FROM_PLAYLIST))
+            MainActivity.hasUpdate = true
         }
 
-        override fun deleteSong(context: Context, song: Song) = DeleteSongDialog.show(context as MainActivity, song)
+        override fun deleteSong(context: Context, song: Song) {
+            DeleteSongDialog.show(context as MainActivity, song)
+        }
 
         override fun playNext(song: Song) {
             mediaSessionConnection.transportControls.sendCustomAction(ACTION_PLAY_NEXT,
-                    Bundle().apply { putLong(SONG, song.id) }
+                Bundle().apply { putLong(SONG, song.id) }
             )
         }
     }
@@ -196,10 +204,10 @@ class MainViewModel(
         _customAction.postValue(Event(ACTION_SONG_DELETED))
         // also need to remove the deleted song from the current playing queue
         mediaSessionConnection.transportControls.sendCustomAction(ACTION_SONG_DELETED,
-                Bundle().apply {
-                    // sending parceleable data through media session custom action bundle is not working currently
-                    putLong(SONG, id)
-                })
+            Bundle().apply {
+                // sending parceleable data through media session custom action bundle is not working currently
+                putLong(SONG, id)
+            })
     }
 
     //cast helpers
@@ -219,17 +227,21 @@ class MainViewModel(
         override fun onStatusUpdated() {
             super.onStatusUpdated()
             castSession?.let {
-                _castLiveData.postValue(CastStatus().fromRemoteMediaClient(it.castDevice.friendlyName,
-                        it.remoteMediaClient))
+                _castLiveData.postValue(
+                    CastStatus().fromRemoteMediaClient(
+                        it.castDevice.friendlyName,
+                        it.remoteMediaClient
+                    )
+                )
             }
         }
     }
 
     private val castProgressListener =
-            RemoteMediaClient.ProgressListener { progress, duration ->
-                log("Cast progress: $progress/$duration")
-                _castProgressLiveData.postValue(Pair(progress, duration))
-            }
+        RemoteMediaClient.ProgressListener { progress, duration ->
+            log("Cast progress: $progress/$duration")
+            _castProgressLiveData.postValue(Pair(progress, duration))
+        }
 
     fun setupCastButton(mediaRouteButton: MediaRouteButton) {
         if (isPlayServiceAvailable) {
@@ -242,7 +254,10 @@ class MainViewModel(
 
             MediaRouter.getInstance(context).apply {
                 addCallback(selector, object : MediaRouter.Callback() {
-                    override fun onRouteChanged(router: MediaRouter?, route: MediaRouter.RouteInfo?) {
+                    override fun onRouteChanged(
+                        router: MediaRouter?,
+                        route: MediaRouter.RouteInfo?
+                    ) {
                         super.onRouteChanged(router, route)
                         mediaRouteButton.show()
                         mediaRouteButton.routeSelector = selector
@@ -259,7 +274,7 @@ class MainViewModel(
     fun setupCastSession() {
         try {
             isPlayServiceAvailable = GoogleApiAvailability
-                    .getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
+                .getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
 
             if (isPlayServiceAvailable) {
                 log("setupCastSession()")

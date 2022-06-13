@@ -61,7 +61,6 @@ class GenreFragment : MediaItemFragment() {
         }
 
         mediaItemFragmentViewModel.mediaItems
-                .filter { it.isNotEmpty() }
                 .observe(this) { list ->
                     @Suppress("UNCHECKED_CAST")
                     genreAdapter.updateData(list as List<Genre>)

@@ -25,14 +25,18 @@ import com.uitk15.mugic.R
 import com.uitk15.mugic.databinding.FragmentPlaylistsBinding
 import com.uitk15.mugic.extensions.*
 import com.uitk15.mugic.models.Playlist
+import com.uitk15.mugic.ui.activities.MainActivity
 import com.uitk15.mugic.ui.adapters.PlaylistAdapter
 import com.uitk15.mugic.ui.dialogs.CreatePlaylistDialog
 import com.uitk15.mugic.ui.fragments.base.MediaItemFragment
+import com.uitk15.mugic.ui.fragments.songs.CategorySongsFragment
+import com.uitk15.mugic.ui.widgets.RecyclerViewItemClickListener
 import com.uitk15.mugic.util.AutoClearedValue
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback, CoroutineScope  {
+class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback,
+    CoroutineScope {
     var binding by AutoClearedValue<FragmentPlaylistsBinding>(this)
     private lateinit var playlistAdapter: PlaylistAdapter
 
@@ -57,13 +61,17 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
             addItemDecoration(DividerItemDecoration(safeActivity, VERTICAL).apply {
                 setDrawable(safeActivity.drawable(R.drawable.divider)!!)
             })
-            addOnItemClick { position, _ ->
-                mainViewModel.mediaItemClicked(playlistAdapter.playlists[position], null)
-            }
+            addOnItemClick(object : RecyclerViewItemClickListener {
+                override fun invoke(position: Int, view: View) {
+                    synchronized(MainActivity.blockGlobalScope) {
+                        MainActivity.blockGlobalScope = true
+                    }
+                    mainViewModel.mediaItemClicked(playlistAdapter.playlists[position], null)
+                }
+            })
         }
 
         mediaItemFragmentViewModel.mediaItems
-            .filter { it.isNotEmpty() }
             .observe(this) { list ->
                 @Suppress("UNCHECKED_CAST")
                 playlistAdapter.updateData(list as List<Playlist>)
@@ -83,7 +91,7 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if(isVisibleToUser && isResumed){
+        if (isVisibleToUser && isResumed) {
             onResume()
         }
     }
@@ -92,19 +100,22 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
         super.onResume()
         if (!userVisibleHint) return
 
-        GlobalScope.launch(Dispatchers.Main) {
-            while (true) {
-                try {
-                    mediaItemFragmentViewModel.reloadMediaItems()
-                    mediaItemFragmentViewModel.mediaItems
-                        .observe(this@PlaylistFragment.viewLifecycleOwner) { list ->
-                            @Suppress("UNCHECKED_CAST")
-                            playlistAdapter.updateData(list as List<Playlist>)
-                        }
-                } catch (ex: Exception) {
-                }
+        mediaItemFragmentViewModel.reloadMediaItems()
 
-                delay(1500L)
+        if (!coroutineContext.isActive) {
+            GlobalScope.launch(coroutineContext) {
+                while (true) {
+                    if (!MainActivity.blockGlobalScope) {
+                        synchronized(MainActivity.hasUpdate) {
+                            if (MainActivity.hasUpdate && this@PlaylistFragment.userVisibleHint) {
+                                MainActivity.hasUpdate = false
+                                mediaItemFragmentViewModel.reloadMediaItems()
+                            }
+                        }
+                    }
+
+                    delay(2000L)
+                }
             }
         }
     }

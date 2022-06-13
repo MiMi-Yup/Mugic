@@ -26,6 +26,7 @@ import com.uitk15.mugic.models.Song
 import com.uitk15.mugic.constants.Constants.SONGS
 import com.uitk15.mugic.extensions.toast
 import com.uitk15.mugic.repository.SongsRepository
+import com.uitk15.mugic.ui.activities.MainActivity
 import com.uitk15.mugic.util.Utils
 import org.koin.android.ext.android.inject
 
@@ -46,6 +47,7 @@ class DeleteSongDialog : DialogFragment() {
                 val message = Utils.makeLabel(context, R.plurals.NNNtracksdeleted, deleted)
                 activity.toast(message)
                 (activity as? OnSongDeleted)?.onSongDeleted(songs.single())
+                MainActivity.hasUpdate = true
             }
             negativeButton(android.R.string.cancel)
             onDismiss {

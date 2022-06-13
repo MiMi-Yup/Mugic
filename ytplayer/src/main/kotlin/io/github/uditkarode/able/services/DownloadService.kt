@@ -61,6 +61,7 @@ class DownloadService : JobIntentService(), CoroutineScope {
         private var fetch: Fetch? = null
 
         fun enqueueDownload(context: Context, intent: Intent) {
+            _isDownloaded = false
             enqueueWork(context, DownloadService::class.java, JOB_ID, intent)
         }
 
@@ -109,26 +110,6 @@ class DownloadService : JobIntentService(), CoroutineScope {
     }
 
     private fun download(song: DownloadableSong) {
-//        launch(Dispatchers.IO) {
-//            if (song.ytmThumbnailLink.isNotBlank()) {
-//                val drw = Glide
-//                    .with(this@DownloadService)
-//                    .load(song.ytmThumbnailLink)
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .skipMemoryCache(true)
-//                    .submit()
-//                    .get()
-//
-//
-//                val id = song.youtubeLink.run {
-//                    this.substring(this.lastIndexOf("=") + 1)
-//                }
-//
-//                val img = File(Constants.mugicSongDir.absolutePath + "/album_art", id.toString()+".jpeg")
-//                Shared.saveAlbumArtToDisk(drw.toBitmap(), img)
-//            }
-//        }
-
         GlobalScope.launch(Dispatchers.Default) {
             val bundle = Bundle()
             val id = song.youtubeLink.run {
@@ -240,12 +221,15 @@ class DownloadService : JobIntentService(), CoroutineScope {
                                             application.onTerminate()
                                             stopSelf()
                                         } else {
-                                            (++currentIndex).also {
-                                                builder.setSubText("$it of ${songQueue.size}")
+                                            try{
+                                                (++currentIndex).also {
+                                                    builder.setSubText("$it of ${songQueue.size}")
+                                                }
+                                                download(
+                                                    songQueue[currentIndex - 1]
+                                                )
                                             }
-                                            download(
-                                                songQueue[currentIndex - 1]
-                                            )
+                                            catch (ex:Exception){}
                                         }
                                     }
                                     Config.RETURN_CODE_CANCEL -> {
