@@ -72,4 +72,6 @@
 
     <string name="play_mode">Mode</string>
     <string name="play_mode_sum">Choose your desired way of playing songs.</string>
+
+    <string name="music">Offline music</string>
 </resources>

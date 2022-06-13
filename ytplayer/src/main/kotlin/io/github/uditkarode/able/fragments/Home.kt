@@ -148,7 +148,7 @@ class Home : Fragment(), CoroutineScope, MusicService.MusicClient {
         bindEvent()
 
         if (songList.isEmpty()) {
-            songList = Shared.getSongList(Constants.ableSongDir)
+            songList = Shared.getSongList(Constants.mugicSongDir)
             songList.addAll(Shared.getLocalSongs(requireContext()))
             if (songList.isNotEmpty()) songList = ArrayList(songList.sortedBy {
                 it.name.toUpperCase(
@@ -264,7 +264,7 @@ class Home : Fragment(), CoroutineScope, MusicService.MusicClient {
                 val ext = stream.getFormat().suffix
                 songId = Shared.getIdFromLink(song.youtubeLink)
 
-                File(Constants.ableSongDir, "$songId.tmp.webm").run {
+                File(Constants.mugicSongDir, "$songId.tmp.webm").run {
                     if (exists()) delete()
                 }
 
@@ -375,7 +375,7 @@ class Home : Fragment(), CoroutineScope, MusicService.MusicClient {
 
 
             val tempFile = File(
-                Constants.ableSongDir.absolutePath
+                Constants.mugicSongDir.absolutePath
                         + "/" + songId + ".tmp.$ext"
             )
             tempFile.createNewFile()
@@ -414,7 +414,7 @@ class Home : Fragment(), CoroutineScope, MusicService.MusicClient {
                     tempFile.delete()
                     launch(Dispatchers.Main) {
                         songList =
-                            Shared.getSongList(Constants.ableSongDir)
+                            Shared.getSongList(Constants.mugicSongDir)
                         songList.addAll(
                             Shared.getLocalSongs(
                                 requireContext()
@@ -466,7 +466,7 @@ class Home : Fragment(), CoroutineScope, MusicService.MusicClient {
     }
 
     fun updateSongList() {
-        songList = Shared.getSongList(Constants.ableSongDir)
+        songList = Shared.getSongList(Constants.mugicSongDir)
         if (context != null) songList.addAll(Shared.getLocalSongs(context as Context))
         songList = ArrayList(songList.sortedBy {
             it.name.toUpperCase(

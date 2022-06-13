@@ -16,7 +16,7 @@ class Constants {
          * will be stored.
          */
         @Suppress("DEPRECATION")
-        val ableSongDir = File(
+        val mugicSongDir = File(
             Environment.getExternalStorageDirectory(),
             "AbleMusic")
 
@@ -24,13 +24,13 @@ class Constants {
          * a File object pointing to the folder where all songs imported from Spotify
          * will be stored.
          */
-        val playlistSongDir = File(ableSongDir.absolutePath + "/playlist_songs")
+        val playlistSongDir = File(mugicSongDir.absolutePath + "/playlist_songs")
 
         /** a File object pointing to the folder where album art JPGs will be stored */
-        val albumArtDir = File(ableSongDir.absolutePath + "/album_art")
+        val albumArtDir = File(mugicSongDir.absolutePath + "/album_art")
 
         /** a File object pointing to the folder where temporary items will be stored */
-        val cacheDir = File(ableSongDir.absolutePath + "/cache")
+        val cacheDir = File(mugicSongDir.absolutePath + "/cache")
 
         /**
          * API keys and version code names which *should* be replaced during compilation.

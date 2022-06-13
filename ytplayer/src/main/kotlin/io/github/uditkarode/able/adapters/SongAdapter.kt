@@ -93,7 +93,7 @@ class SongAdapter (
             holder.albumArt.run {
                 if (this != null) {
                     File(
-                        Constants.ableSongDir.absolutePath + "/album_art",
+                        Constants.mugicSongDir.absolutePath + "/album_art",
                         File(current.filePath).nameWithoutExtension
                     ).also {
                         when {
@@ -263,7 +263,7 @@ class SongAdapter (
                     val curFile = File(current.filePath)
                     val curArt =
                         File(
-                            Constants.ableSongDir.absolutePath + "/album_art",
+                            Constants.mugicSongDir.absolutePath + "/album_art",
                             curFile.nameWithoutExtension
                         )
 

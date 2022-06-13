@@ -75,7 +75,7 @@ class RealNotifications(
             return getEmptyNotification()
         }
 
-        val albumName = mediaSession.controller.metadata.getString(METADATA_KEY_ALBUM)
+        val albumName = context.getString(R.string.music)
         val artistName = mediaSession.controller.metadata.getString(METADATA_KEY_ARTIST)
         val trackName = mediaSession.controller.metadata.getString(METADATA_KEY_TITLE)
         val artwork = mediaSession.controller.metadata.getBitmap(METADATA_KEY_ALBUM_ART)

@@ -58,7 +58,7 @@ class LocalPlaylistAdapter(private val songList: ArrayList<Song>,
         holder.songUploader.text = "Song • " + current.artist
 
         holder.songAlbumArt.run {
-            File(Constants.ableSongDir.absolutePath + "/album_art",
+            File(Constants.mugicSongDir.absolutePath + "/album_art",
                 File(current.filePath).nameWithoutExtension).also {
                 if(it.exists())
                     Glide.with(holder.getContext())

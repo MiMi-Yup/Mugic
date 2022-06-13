@@ -109,25 +109,25 @@ class DownloadService : JobIntentService(), CoroutineScope {
     }
 
     private fun download(song: DownloadableSong) {
-        /*launch(Dispatchers.IO) {
-            if (song.ytmThumbnailLink.isNotBlank()) {
-                val drw = Glide
-                    .with(this@DownloadService)
-                    .load(song.ytmThumbnailLink)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .submit()
-                    .get()
-
-
-                val id = song.youtubeLink.run {
-                    this.substring(this.lastIndexOf("=") + 1)
-                }
-
-                val img = File(Constants.ableSongDir.absolutePath + "/album_art", id)
-                Shared.saveAlbumArtToDisk(drw.toBitmap(), img)
-            }
-        }*/
+//        launch(Dispatchers.IO) {
+//            if (song.ytmThumbnailLink.isNotBlank()) {
+//                val drw = Glide
+//                    .with(this@DownloadService)
+//                    .load(song.ytmThumbnailLink)
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .skipMemoryCache(true)
+//                    .submit()
+//                    .get()
+//
+//
+//                val id = song.youtubeLink.run {
+//                    this.substring(this.lastIndexOf("=") + 1)
+//                }
+//
+//                val img = File(Constants.mugicSongDir.absolutePath + "/album_art", id.toString()+".jpeg")
+//                Shared.saveAlbumArtToDisk(drw.toBitmap(), img)
+//            }
+//        }
 
         GlobalScope.launch(Dispatchers.Default) {
             val bundle = Bundle()
@@ -147,11 +147,11 @@ class DownloadService : JobIntentService(), CoroutineScope {
             val url = stream.url
             val bitrate = stream.averageBitrate
             val ext = stream.getFormat().suffix
-            val mediaFile = File(Constants.ableSongDir, id)
+            val mediaFile = File(Constants.mugicSongDir, id)
 
-            if (!Constants.ableSongDir.exists()) {
-                val mkdirs = Constants.ableSongDir.mkdirs()
-                if (!mkdirs) throw IOException("Could not create output directory: ${Constants.ableSongDir}")
+            if (!Constants.mugicSongDir.exists()) {
+                val mkdirs = Constants.mugicSongDir.mkdirs()
+                if (!mkdirs) throw IOException("Could not create output directory: ${Constants.mugicSongDir}")
             }
 
             val notifName =
@@ -217,14 +217,12 @@ class DownloadService : JobIntentService(), CoroutineScope {
                             else Format.MODE_WEBM*/
 
                         val format = Format.MODE_MP3
-                        val pathFile = "${Constants.ableSongDir.absolutePath}/../Music/$id.mp3"
+                        val pathFile = "${Constants.mugicSongDir.absolutePath}/$id.mp3"
 
                         if (format == Format.MODE_MP3 || Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
                             command += "-vn -ab ${bitrate}k -c:a mp3 -ar 44100 "
 
                         command += "\"${pathFile}\""
-                        Log.e("asd", "DOING")
-                        //error la ne: dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/base.apk"],nativeLibraryDirectories=[/data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/lib/x86, /data/app/com.uitk15.mugic-BuUOYqrCFr97Nju5ZSRs0A==/base.apk!/lib/x86, /system/lib]]] couldn't find "libmobileffmpeg_abidetect.so"
                         Thread(object : Runnable {
                             private val ownCommnad = command
                             private val ownPathFile = pathFile
@@ -367,7 +365,7 @@ class DownloadService : JobIntentService(), CoroutineScope {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 Constants.CHANNEL_ID,
-                "AbleMusicDownload",
+                "MugicDownload",
                 NotificationManager.IMPORTANCE_LOW
             )
             notificationChannel.enableLights(false)

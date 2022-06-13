@@ -47,7 +47,7 @@ class SwipeControllerActions(private var mode: String, private var mService: Mut
     }
 
     private fun getSongList(context: Context?) {
-        songList = Shared.getSongList(Constants.ableSongDir)
+        songList = Shared.getSongList(Constants.mugicSongDir)
         songList.addAll(Shared.getLocalSongs(context!!))
         songList = ArrayList(songList.sortedBy {
             it.name.toUpperCase(
@@ -122,7 +122,7 @@ class SwipeControllerActions(private var mode: String, private var mService: Mut
                         if (curFile.absolutePath.contains("Able")) {
                             val curArt =
                                 File(
-                                    Constants.ableSongDir.absolutePath + "/album_art",
+                                    Constants.mugicSongDir.absolutePath + "/album_art",
                                     curFile.nameWithoutExtension
                                 )
                             curFile.delete()

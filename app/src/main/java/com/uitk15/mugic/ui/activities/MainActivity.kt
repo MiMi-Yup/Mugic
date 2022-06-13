@@ -230,11 +230,6 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
     }
 
     override fun sendItem(song: Song, mode: String) {
-        /*var currentMode = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
-            .getString("mode_key", MusicMode.download)
-        if (mode.isNotEmpty())
-            currentMode = mode*/
-
         var currentMode = MusicMode.download
 
         if (song.ytmThumbnail.contains("googleusercontent")) //set resolution for youtube music art

@@ -824,11 +824,11 @@ class Player : MusicClientActivity() {
             var didGetArt = false
             val current = mService.getPlayQueue()[mService.getCurrentIndex()]
             val img = File(
-                Constants.ableSongDir.absolutePath + "/album_art",
+                Constants.mugicSongDir.absolutePath + "/album_art",
                 File(current.filePath).nameWithoutExtension
             )
             val cacheImg = File(
-                Constants.ableSongDir.absolutePath + "/cache",
+                Constants.mugicSongDir.absolutePath + "/cache",
                 "sCache" + Shared.getIdFromLink(MusicService.playQueue[MusicService.currentIndex].youtubeLink)
             )
 

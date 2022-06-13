@@ -203,7 +203,7 @@ class MusicService : Service(), AudioManager.OnAudioFocusChangeListener, Corouti
 
             (builder as Notification.Builder)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setSubText(getString(R.string.music))
+                .setSubText(getString(R.string.stream_notification))
                 .setContentIntent(
                     PendingIntent.getActivity(
                         this,
@@ -451,7 +451,7 @@ class MusicService : Service(), AudioManager.OnAudioFocusChangeListener, Corouti
             var prevOff = 0
             var prevProg = 0
             var songDur = 0
-            val tmpf = File("${Constants.ableSongDir.absolutePath}/tmp_stream-$currentIndex.tmp")
+            val tmpf = File("${Constants.mugicSongDir.absolutePath}/tmp_stream-$currentIndex.tmp")
 
             launch(Dispatchers.Default) {
                 registeredClients.forEach(MusicClient::songChanged)
@@ -729,7 +729,7 @@ class MusicService : Service(), AudioManager.OnAudioFocusChangeListener, Corouti
         try {
             if (image == null) {
                 File(
-                    Constants.ableSongDir.absolutePath + "/album_art",
+                    Constants.mugicSongDir.absolutePath + "/album_art",
                     File(playQueue[currentIndex].filePath).nameWithoutExtension
                 ).also {
                     if (it.exists() && it.isFile) {
@@ -738,7 +738,7 @@ class MusicService : Service(), AudioManager.OnAudioFocusChangeListener, Corouti
                 }
 
                 File(
-                    Constants.ableSongDir.absolutePath + "/cache",
+                    Constants.mugicSongDir.absolutePath + "/cache",
                     "sCache" + Shared.getIdFromLink(playQueue[currentIndex].youtubeLink)
                 ).also {
                     if (it.exists() && it.isFile) {
@@ -824,7 +824,7 @@ class MusicService : Service(), AudioManager.OnAudioFocusChangeListener, Corouti
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 "10002",
-                getString(R.string.music),
+                getString(R.string.stream_notification),
                 NotificationManager.IMPORTANCE_LOW
             )
             notificationChannel.enableLights(false)

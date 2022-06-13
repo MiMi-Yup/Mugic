@@ -132,7 +132,7 @@ object SpotifyImport: CoroutineScope {
                                         .get()
 
                                     val img = File(
-                                        Constants.ableSongDir.absolutePath + "/album_art",
+                                        Constants.mugicSongDir.absolutePath + "/album_art",
                                         fileName
                                     )
                                     Shared.saveAlbumArtToDisk(drw.toBitmap(), img)
