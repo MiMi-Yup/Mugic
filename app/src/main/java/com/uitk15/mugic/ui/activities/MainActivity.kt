@@ -55,7 +55,6 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Search.SongCallback,
@@ -68,7 +67,7 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
     private var binding: MainActivityBinding? = null
     private var bottomSheetListener: BottomSheetListener? = null
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
-    private lateinit var mServiceResultReceiver: ServiceResultReceiver
+    private var mServiceResultReceiver: ServiceResultReceiver = ServiceResultReceiver(Handler(Looper.getMainLooper()))
     private lateinit var home: Home
 
     override val coroutineContext: CoroutineContext
@@ -89,7 +88,7 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
 
         setupUI()
 
-        mServiceResultReceiver = ServiceResultReceiver(Handler(Looper.getMainLooper()))
+        /*mServiceResultReceiver = ServiceResultReceiver(Handler(Looper.getMainLooper()))*/
         mServiceResultReceiver.setReceiver(this@MainActivity)
 
         home = Home()
