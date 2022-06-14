@@ -17,12 +17,7 @@ package com.uitk15.mugic.ui.fragments
 import android.animation.AnimatorInflater.loadStateListAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -31,16 +26,19 @@ import com.afollestad.rxkprefs.Pref
 import com.google.android.material.appbar.AppBarLayout
 import com.uitk15.mugic.PREF_START_PAGE
 import com.uitk15.mugic.R
+import com.uitk15.mugic.constants.StartPage
+import com.uitk15.mugic.databinding.MainFragmentBinding
+import com.uitk15.mugic.extensions.addFragment
+import com.uitk15.mugic.extensions.drawable
+import com.uitk15.mugic.extensions.inflateWithBinding
+import com.uitk15.mugic.extensions.safeActivity
+import com.uitk15.mugic.models.MediaID
 import com.uitk15.mugic.playback.TimberMusicService.Companion.TYPE_ALL_ALBUMS
 import com.uitk15.mugic.playback.TimberMusicService.Companion.TYPE_ALL_ARTISTS
 import com.uitk15.mugic.playback.TimberMusicService.Companion.TYPE_ALL_FOLDERS
 import com.uitk15.mugic.playback.TimberMusicService.Companion.TYPE_ALL_GENRES
 import com.uitk15.mugic.playback.TimberMusicService.Companion.TYPE_ALL_PLAYLISTS
 import com.uitk15.mugic.playback.TimberMusicService.Companion.TYPE_ALL_SONGS
-import com.uitk15.mugic.constants.StartPage
-import com.uitk15.mugic.databinding.MainFragmentBinding
-import com.uitk15.mugic.extensions.*
-import com.uitk15.mugic.models.MediaID
 import com.uitk15.mugic.ui.activities.MainActivity
 import com.uitk15.mugic.ui.activities.SettingsActivity
 import com.uitk15.mugic.ui.dialogs.AboutDialog
@@ -91,11 +89,6 @@ class MainFragment : Fragment() {
             MainActivity.isShowSearching = true
             safeActivity.addFragment(fragment = SearchFragment())
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        (safeActivity as MainActivity).setupCastButton(binding.toolbarLayout.mediaRouteButton)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

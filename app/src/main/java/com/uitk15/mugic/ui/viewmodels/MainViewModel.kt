@@ -22,28 +22,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.mediarouter.app.MediaRouteButton
-import androidx.mediarouter.media.MediaControlIntent.CATEGORY_LIVE_AUDIO
-import androidx.mediarouter.media.MediaControlIntent.CATEGORY_REMOTE_PLAYBACK
-import androidx.mediarouter.media.MediaRouteSelector
-import androidx.mediarouter.media.MediaRouter
-import androidx.mediarouter.media.MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY
-import com.google.android.gms.cast.framework.*
-import com.google.android.gms.cast.framework.media.RemoteMediaClient
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import com.uitk15.mugic.cast.CastHelper
-import com.uitk15.mugic.cast.CastServer
-import com.uitk15.mugic.constants.Constants
-import com.uitk15.mugic.constants.Constants.ACTION_CAST_CONNECTED
-import com.uitk15.mugic.constants.Constants.ACTION_CAST_DISCONNECTED
 import com.uitk15.mugic.constants.Constants.ACTION_PLAY_NEXT
 import com.uitk15.mugic.constants.Constants.ACTION_REMOVED_FROM_PLAYLIST
 import com.uitk15.mugic.constants.Constants.ACTION_SONG_DELETED
 import com.uitk15.mugic.constants.Constants.SONG
 import com.uitk15.mugic.extensions.*
-import com.uitk15.mugic.models.CastStatus
-import com.uitk15.mugic.models.CastStatus.Companion.STATUS_NONE
 import com.uitk15.mugic.models.MediaID
 import com.uitk15.mugic.models.Song
 import com.uitk15.mugic.playback.MediaSessionConnection
@@ -56,9 +39,7 @@ import com.uitk15.mugic.ui.dialogs.AddToPlaylistDialog
 import com.uitk15.mugic.ui.dialogs.DeleteSongDialog
 import com.uitk15.mugic.ui.listeners.PopupMenuListener
 import com.uitk15.mugic.util.Event
-import java.io.IOException
 import timber.log.Timber.d as log
-import timber.log.Timber.e as loge
 import timber.log.Timber.w as warn
 
 class MainViewModel(
@@ -114,32 +95,6 @@ class MainViewModel(
 
     private fun playMedia(mediaItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
         log("playMedia(): $mediaItem")
-
-        //check if casting
-        castSession?.let { castSession ->
-            val songID = MediaID().fromString(mediaItem.mediaId!!).mediaId!!.toLong()
-            castLiveData.value?.let {
-                if (it.state != STATUS_NONE && it.castSongId != -1 && it.castSongId.toLong() == songID) {
-                    castSession.remoteMediaClient.togglePlayback()
-                    return
-                }
-            }
-            val song = songsRepository.getSongForId(songID)
-            val songsList = extras?.getLongArray(Constants.SONGS_LIST)
-            if (songsList != null) {
-                val currentIndex = songsList.indexOf(songID)
-                val extraSize = songsList.size - currentIndex - 1
-                //only send 5 items in queue
-                val filteredQueue = songsList.copyOfRange(
-                        fromIndex = currentIndex,
-                        toIndex = currentIndex + if (extraSize >= 5) 5 else extraSize
-                )
-                CastHelper.castSongQueue(castSession, songsRepository.getSongsForIds(filteredQueue), 0)
-                return
-            }
-            CastHelper.castSong(castSession, song)
-            return
-        }
 
         val nowPlaying = mediaSessionConnection.nowPlaying.value
         val transportControls = mediaSessionConnection.transportControls
@@ -203,153 +158,4 @@ class MainViewModel(
     }
 
     //cast helpers
-    private var castSession: CastSession? = null
-    private var sessionManager: SessionManager? = null
-    private var isPlayServiceAvailable = false
-    private var castServer: CastServer? = null
-    private var mediaRouteButton: MediaRouteButton? = null
-
-    val castLiveData: LiveData<CastStatus> get() = _castLiveData
-    private val _castLiveData = MutableLiveData<CastStatus>()
-
-    val castProgressLiveData: LiveData<Pair<Long, Long>> get() = _castProgressLiveData
-    private val _castProgressLiveData = MutableLiveData<Pair<Long, Long>>()
-
-    private val castCallback = object : RemoteMediaClient.Callback() {
-        override fun onStatusUpdated() {
-            super.onStatusUpdated()
-            castSession?.let {
-                _castLiveData.postValue(CastStatus().fromRemoteMediaClient(it.castDevice.friendlyName,
-                        it.remoteMediaClient))
-            }
-        }
-    }
-
-    private val castProgressListener =
-            RemoteMediaClient.ProgressListener { progress, duration ->
-                log("Cast progress: $progress/$duration")
-                _castProgressLiveData.postValue(Pair(progress, duration))
-            }
-
-    fun setupCastButton(mediaRouteButton: MediaRouteButton) {
-        if (isPlayServiceAvailable) {
-            log("setupCastButton()")
-            this.mediaRouteButton = mediaRouteButton
-            val selector = MediaRouteSelector.fromBundle(MediaRouteSelector.Builder().apply {
-                addControlCategory(CATEGORY_REMOTE_PLAYBACK)
-                addControlCategory(CATEGORY_LIVE_AUDIO)
-            }.build().asBundle())
-
-            MediaRouter.getInstance(context).apply {
-                addCallback(selector, object : MediaRouter.Callback() {
-                    override fun onRouteChanged(router: MediaRouter?, route: MediaRouter.RouteInfo?) {
-                        super.onRouteChanged(router, route)
-                        mediaRouteButton.show()
-                        mediaRouteButton.routeSelector = selector
-                    }
-                }, CALLBACK_FLAG_REQUEST_DISCOVERY)
-            }
-
-            CastButtonFactory.setUpMediaRouteButton(context.applicationContext, mediaRouteButton)
-        } else {
-            log("setupCastButton() - Play services not available")
-        }
-    }
-
-    fun setupCastSession() {
-        try {
-            isPlayServiceAvailable = GoogleApiAvailability
-                    .getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
-
-            if (isPlayServiceAvailable) {
-                log("setupCastSession()")
-                val castContext = CastContext.getSharedInstance(context.applicationContext)
-                sessionManager = castContext.sessionManager
-                if (castSession == null) {
-                    castSession = sessionManager?.currentCastSession.also {
-                        it?.remoteMediaClient?.registerCallback(castCallback)
-                        it?.remoteMediaClient?.addProgressListener(castProgressListener, 100)
-                    }
-                    sessionManager?.addSessionManagerListener(sessionManagerListener)
-                } else {
-                    sessionManager?.currentCastSession?.let { castSession = it }
-                }
-            } else {
-                log("setupCastSession() - Play services not available")
-            }
-        } catch (e: Exception) {
-            loge(e)
-        }
-    }
-
-    fun pauseCastSession() {
-        log("pauseCastSession()")
-        sessionManager?.removeSessionManagerListener(sessionManagerListener)
-        castSession?.remoteMediaClient?.run {
-            unregisterCallback(castCallback)
-            removeProgressListener(castProgressListener)
-        }
-        castSession = null
-    }
-
-    private val sessionManagerListener = object : SessionManagerListener<Session> {
-        override fun onSessionEnded(p0: Session?, p1: Int) {
-            log("onSessionEnded()")
-            _customAction.postValue(Event(ACTION_CAST_DISCONNECTED))
-            pauseCastSession()
-            stopCastServer()
-        }
-
-        override fun onSessionEnding(p0: Session?) = Unit
-
-        override fun onSessionResumeFailed(p0: Session?, p1: Int) = Unit
-
-        override fun onSessionResumed(p0: Session?, p1: Boolean) {
-            log("onSessionResumed()")
-            _customAction.postValue(Event(ACTION_CAST_CONNECTED))
-            setupCastSession()
-            mediaRouteButton?.show()
-        }
-
-        override fun onSessionResuming(p0: Session?, p1: String?) {
-            log("onSessionResuming()")
-            startCastServer()
-        }
-
-        override fun onSessionStartFailed(p0: Session?, p1: Int) {
-            warn("onSessionStartFailed()")
-        }
-
-        override fun onSessionStarted(p0: Session?, p1: String?) {
-            log("onSessionStarted()")
-            _customAction.postValue(Event(ACTION_CAST_CONNECTED))
-            setupCastSession()
-            mediaRouteButton?.show()
-        }
-
-        override fun onSessionStarting(p0: Session?) {
-            log("onSessionStarting()")
-            startCastServer()
-        }
-
-        override fun onSessionSuspended(p0: Session?, p1: Int) {
-            log("onSessionSuspended()")
-            stopCastServer()
-        }
-    }
-
-    private fun startCastServer() {
-        log("startCastServer()")
-        castServer = CastServer(context)
-        try {
-            castServer?.start()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun stopCastServer() {
-        log("stopCastServer()")
-        castServer?.stop()
-    }
 }

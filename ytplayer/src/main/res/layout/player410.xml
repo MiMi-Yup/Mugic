@@ -232,33 +232,4 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/bottom_cast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/cast"
-            />
-
-        <!--suppress AndroidUnknownAttribute -->
-        <TextView
-            fontPath="fonts/interbold.otf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingEnd="5dp"
-            android:paddingStart="5dp"
-            android:text="Cast"
-            android:textColor="#80fbfbfb"
-            android:textSize="15sp"
-            tools:ignore="MissingPrefix" />
-
-    </LinearLayout>
-
 </RelativeLayout>

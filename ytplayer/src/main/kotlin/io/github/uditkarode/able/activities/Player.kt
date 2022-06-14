@@ -64,7 +64,9 @@ import io.github.uditkarode.able.services.MusicService
 import io.github.uditkarode.able.utils.Constants
 import io.github.uditkarode.able.utils.MusicClientActivity
 import io.github.uditkarode.able.utils.Shared
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -72,7 +74,6 @@ import org.json.JSONObject
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 /**
  * The Player UI activity.
@@ -187,14 +188,14 @@ class Player : MusicClientActivity() {
          * Since we don't use fitSystemWindows, we need to manually
          * apply window insets as margin.
          */
-        if (binding410?.bottomCast != null) {
+        /*if (binding410?.bottomCast != null) {
             binding410?.bottomCast!!.setOnApplyWindowInsetsListener { _, insets ->
                 val kek = binding410?.bottomCast!!.layoutParams as ViewGroup.MarginLayoutParams
                 @Suppress("DEPRECATION")
                 kek.setMargins(0, 0, 0, insets.systemWindowInsetBottom)
                 insets
             }
-        }
+        }*/
         topControls =
             (binding220?.topControls
                 ?:binding320?.topControls

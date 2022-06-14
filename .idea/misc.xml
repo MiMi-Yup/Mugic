@@ -36,8 +36,11 @@
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/main_fragment.xml" value="0.365768896611642" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/main_splash.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/layout/toolbar.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/menu/album_sort_by.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/menu/menu_expanded_controller.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/menu/menu_main.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/menu/menu_popup_song.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/app/src/main/res/menu/song_sort_by.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2185" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
         <entry key="..\:/AndroidApp/Mugic/app/src/main/res/xml/preferences.xml" value="0.21927083333333333" />
@@ -55,6 +58,7 @@
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout-v23/search.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/player.xml" value="0.21927083333333333" />
+        <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/player400.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/player410.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/playermassive.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidApp/Mugic/ytplayer/src/main/res/layout/playlists.xml" value="0.21927083333333333" />
