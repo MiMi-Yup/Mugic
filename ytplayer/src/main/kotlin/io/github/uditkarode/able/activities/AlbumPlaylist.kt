@@ -34,7 +34,6 @@ import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import io.github.uditkarode.able.R
-import io.github.uditkarode.able.adapters.PlaybumAdapter
 import io.github.uditkarode.able.databinding.AlbumplaylistBinding
 import io.github.uditkarode.able.models.Song
 import io.github.uditkarode.able.services.MusicService
@@ -44,7 +43,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import org.schabi.newpipe.extractor.ServiceList.YouTube
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
-import java.lang.ref.WeakReference
 
 /**
  * The activity that shows up when a user taps on an album or playlist
@@ -156,8 +154,6 @@ class AlbumPlaylist : AppCompatActivity(), CoroutineScope {
             }
 
             launch(Dispatchers.Main) {
-                binding.apRv.adapter =
-                    PlaybumAdapter(resultArray, WeakReference(this@AlbumPlaylist), "Song")
                 binding.apRv.layoutManager = LinearLayoutManager(this@AlbumPlaylist)
                 binding.loadingView.visibility = View.GONE
                 binding.loadingView.pauseAnimation()

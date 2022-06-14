@@ -49,7 +49,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import io.github.uditkarode.able.R
-import io.github.uditkarode.able.activities.Settings
 import io.github.uditkarode.able.adapters.SongAdapter
 import io.github.uditkarode.able.databinding.HomeBinding
 import io.github.uditkarode.able.models.CacheStatus
@@ -73,7 +72,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.lang.ref.WeakReference
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * The first fragment. Shows a list of songs present on the user's device.
@@ -129,10 +127,6 @@ class Home : Fragment(), CoroutineScope, MusicService.MusicClient {
                 )
             )
             .on(view.findViewById<TextView>(R.id.able_header))
-
-        _binding!!.settings.setOnClickListener {
-            startActivity(Intent(requireContext(), Settings::class.java))
-        }
 
         serviceConn = object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
