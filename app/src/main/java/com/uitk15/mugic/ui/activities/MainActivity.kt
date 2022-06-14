@@ -26,7 +26,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.NonNull
-import androidx.mediarouter.app.MediaRouteButton
 import com.afollestad.rxkprefs.Pref
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
@@ -122,20 +121,6 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted, Sear
                 super.onBackPressed()
             }
         }
-    }
-
-    fun setupCastButton(mediaRouteButton: MediaRouteButton) {
-        viewModel.setupCastButton(mediaRouteButton)
-    }
-
-    override fun onResume() {
-        viewModel.setupCastSession()
-        super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.pauseCastSession()
     }
 
     override fun onSongDeleted(songId: Long) {

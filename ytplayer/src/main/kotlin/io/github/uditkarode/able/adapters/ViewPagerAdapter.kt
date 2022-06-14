@@ -22,7 +22,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import io.github.uditkarode.able.fragments.Home
-import io.github.uditkarode.able.fragments.Playlists
 import io.github.uditkarode.able.fragments.Search
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -36,7 +35,7 @@ class ViewPagerAdapter(fm: FragmentManager, private val home: Home):
         return when(position) {
             0 -> Search()
             1 -> home
-            else -> Playlists()
+            else -> Search()
         }
     }
 

@@ -16,39 +16,17 @@ package com.uitk15.mugic.ui.fragments
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
-import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
-import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
-import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
-import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
-import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
-import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import android.support.v4.media.session.PlaybackStateCompat.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.lifecycle.Observer
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.uitk15.mugic.R
-import com.uitk15.mugic.constants.Constants.ACTION_CAST_CONNECTED
-import com.uitk15.mugic.constants.Constants.ACTION_CAST_DISCONNECTED
-import com.uitk15.mugic.constants.Constants.ACTION_RESTORE_MEDIA_SESSION
 import com.uitk15.mugic.constants.Constants.NOW_PLAYING
 import com.uitk15.mugic.databinding.LayoutBottomsheetControlsBinding
-import com.uitk15.mugic.extensions.addFragment
-import com.uitk15.mugic.extensions.hide
-import com.uitk15.mugic.extensions.inflateWithBinding
-import com.uitk15.mugic.extensions.map
-import com.uitk15.mugic.extensions.observe
-import com.uitk15.mugic.extensions.show
-import com.uitk15.mugic.models.CastStatus
-import com.uitk15.mugic.models.CastStatus.Companion.STATUS_PLAYING
-import com.uitk15.mugic.network.models.ArtworkSize
+import com.uitk15.mugic.extensions.*
 import com.uitk15.mugic.ui.activities.MainActivity
-import com.uitk15.mugic.ui.bindings.setLastFmAlbumImage
-import com.uitk15.mugic.ui.bindings.setPlayState
 import com.uitk15.mugic.ui.fragments.base.BaseNowPlayingFragment
 import com.uitk15.mugic.ui.widgets.BottomSheetListener
 import com.uitk15.mugic.util.AutoClearedValue
@@ -81,7 +59,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         binding.lifecycleOwner = this
 
         setupUI()
-        setupCast()
     }
 
     private fun setupUI() {
@@ -147,63 +124,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
                 }, 200)
             }
         }
-    }
-
-    private fun setupCast() {
-        //display cast data directly if casting instead of databinding
-        val castProgressObserver = Observer<Pair<Long, Long>> {
-            binding.progressBar.progress = it.first.toInt()
-            if (binding.progressBar.max != it.second.toInt())
-                binding.progressBar.max = it.second.toInt()
-
-            binding.seekBar.progress = it.first.toInt()
-            if (binding.seekBar.max != it.second.toInt())
-                binding.seekBar.max = it.second.toInt()
-        }
-
-        val castStatusObserver = Observer<CastStatus> {
-            it ?: return@Observer
-            if (it.isCasting) {
-                isCasting = true
-
-                mainViewModel.castProgressLiveData.observe(this, castProgressObserver)
-                setLastFmAlbumImage(binding.bottomContolsAlbumart, it.castSongArtist, it.castSongAlbum, ArtworkSize.SMALL, it.castAlbumId.toLong())
-
-                binding.songArtist.text = getString(R.string.casting_to_x, it.castDeviceName)
-                if (it.castSongId == -1) {
-                    binding.songTitle.text = getString(R.string.nothing_playing)
-                } else {
-                    binding.songTitle.text =
-                            getString(R.string.now_playing_format, it.castSongTitle, it.castSongArtist)
-                }
-
-                if (it.state == STATUS_PLAYING) {
-                    setPlayState(binding.btnTogglePlayPause, STATE_PLAYING)
-                    setPlayState(binding.btnPlayPause, STATE_PLAYING)
-                } else {
-                    setPlayState(binding.btnTogglePlayPause, STATE_PAUSED)
-                    setPlayState(binding.btnPlayPause, STATE_PAUSED)
-                }
-            } else {
-                isCasting = false
-                mainViewModel.castProgressLiveData.removeObserver(castProgressObserver)
-            }
-        }
-
-        mainViewModel.customAction
-                .map { it.peekContent() }
-                .observe(this) {
-                    when (it) {
-                        ACTION_CAST_CONNECTED -> {
-                            mainViewModel.castLiveData.observe(this, castStatusObserver)
-                        }
-                        ACTION_CAST_DISCONNECTED -> {
-                            isCasting = false
-                            mainViewModel.castLiveData.removeObserver(castStatusObserver)
-                            mainViewModel.transportControls().sendCustomAction(ACTION_RESTORE_MEDIA_SESSION, null)
-                        }
-                    }
-                }
     }
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) {
